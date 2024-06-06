@@ -1,0 +1,82 @@
+.navbar {
+  background-color: #fff; /* Background color */
+  border-bottom: 1px solid #ddd; /* Bottom border */
+  /* Ensure the navbar is fixed at the top */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Center the brand name and ensure proper sizing */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+/* Style the navigation links */
+.navbar-nav .nav-item {
+  margin-right: 10px; /* Space between nav items */
+}
+
+.navbar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  color: #333;
+  cursor: pointer;
+  position: relative; /* Add this line */
+}
+
+
+a {
+  cursor: pointer;
+}
+
+/* Style Font Awesome icons */
+.fa {
+  margin-right: 5px; /* Space between icon and text */
+}
+
+/* Style the active link */
+.nav-item.active .nav-link {
+  color: #007bff; /* Active link text color */
+  font-weight: bold; /* Active link text weight */
+}
+
+/* Style for the cart count badge */
+/* Style for the cart count badge */
+.cart-badge {
+  background-color: rgb(210, 74, 74);
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+  position: absolute; /* Use absolute positioning within the relative parent */
+  top: -10px; /* Adjust this value to move the badge up */
+  right: 0; /* Adjust this value as needed to align it above the cart icon */
+  transform: translateX(50%); /* Use transform to precisely position the badge */
+  z-index: 1; /* Ensure the badge is displayed above other content */
+}
+
+
+/* Correct positioning for mobile view and collapsing */
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-collapse {
+  justify-content: flex-end;
+}
+
+@media (max-width: 991px) {
+  .navbar-nav .nav-link {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Ensure the navbar doesn't overlap content */
+body {
+  padding-top: 56px; /* Adjust to the height of your navbar */
+}
