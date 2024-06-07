@@ -1,7 +1,13 @@
 version: '3.8'
 
+networks:
+  my-network:
+    driver: bridge
+
 services:
   redis:
+    networks:
+      - my-network
     image: "redis:latest"
     container_name: "my-redis-container"
     ports:
@@ -10,12 +16,38 @@ services:
       - redis-data:/data
 
   redis-commander:
+    networks:
+      - my-network
     image: "rediscommander/redis-commander:latest"
     container_name: "my-redis-commander-container"
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
       - "8081:8081"
+
+  api:
+    networks:
+    - my-network
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "my-api-container"
+    ports:
+      - "5103:80"
+    depends_on:
+      - redis
+
+  client:
+    networks:
+    - my-network
+    build:
+      context: ./CLIENT
+      dockerfile: Dockerfile
+    container_name: "my-client-container"
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
 
 volumes:
   redis-data:
