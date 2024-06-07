@@ -34,7 +34,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
     managedEnvironmentId: environmentId
     configuration: {
       ingress: {
-        targetPort: 8080
+        targetPort: 80
         external: true
         
         ipSecurityRestrictions: [
@@ -87,7 +87,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
             [
               {
                 name: 'WEBSITES_PORT'
-                value: '8080'
+                value: '80'
               }
             ],
             envVariables
