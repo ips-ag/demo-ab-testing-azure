@@ -5,7 +5,7 @@ param secretNames array = []
 param keyvaultName string
 param envVariables object[] = []
 
-var acrName ='${prefix}-acr'
+var acrName ='ipsacr'
 resource acrResource 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: acrName
   location: location

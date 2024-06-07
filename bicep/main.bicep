@@ -26,6 +26,7 @@ module keyvault './General/keyvault.bicep' = {
 module logWorkSpace './General/workspace.bicep' = {
   name: 'deploy-workspace'
   scope: resGroup
+  dependsOn: [kv]
   params: {
     prefix: rgName
     keyVaultName: keyVaultName
@@ -35,6 +36,7 @@ module logWorkSpace './General/workspace.bicep' = {
 module insights './General/insights.bicep' = {
   name: 'deploy-insights'
   scope: resGroup
+  dependsOn: [kv]
   params: {
     location: location
     logAnaliticsWorkspaceId: logWorkSpace.outputs.workpsaceId
@@ -43,12 +45,21 @@ module insights './General/insights.bicep' = {
   }
 }
 
+resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: keyVaultName
+  scope: resGroup
+}
+
 module containerEnv './General/container-env.bicep' = {
   name: 'create-env'
+  dependsOn: [kv]
   scope: resGroup
   params: {
     location: location
     prefix: rgName
+    customerId: kv.getSecret('workspace-customerId')
+    instrumentationKey: kv.getSecret('insights-instrumentation-key')
+    primarySharedKey: kv.getSecret('workspace-shared-key')
   }
 }
 
@@ -60,25 +71,26 @@ var envVariables = [
   }
   {
     name: 'ApplicationInsights__InstrumentationKey'
-    secretRef:  insights.outputs.kvInstrumentationKey
+    secretRef: insights.outputs.kvInstrumentationKey
   }
-  {
-    name: 'ConnectionStrings__DefaultConnection'
-    secretRef: 'TODO'
-  }
-  {
-    name: 'ConnectionStrings__IdentityConnection'
-    secretRef: 'TODO'
-  }
-  {
-    name: 'ConnectionStrings__Redis'
-    secretRef: 'TODO'
-  }
+  // {
+  //   name: 'ConnectionStrings__DefaultConnection'
+  //   secretRef: 'TODO'
+  // }
+  // {
+  //   name: 'ConnectionStrings__IdentityConnection'
+  //   secretRef: 'TODO'
+  // }
+  // {
+  //   name: 'ConnectionStrings__Redis'
+  //   secretRef: 'TODO'
+  // }
 ]
 
 module webAppApi './General/container-app.bicep' = {
   name: 'web-container-deployment'
   scope: resGroup
+  dependsOn: [containerEnv, kv]
   params: {
     prefix: rgName
     location: location
@@ -92,6 +104,7 @@ module webAppApi './General/container-app.bicep' = {
 module accessPolicy './Shared/add-keyvault-policy.bicep' = {
   name: 'add-kv-access-policies'
   scope: resGroup
+  dependsOn: [webAppApi, kv]
   params: {
     keyVaultName: keyVaultName
     principalIds: [webAppApi.outputs.principalId]

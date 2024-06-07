@@ -1,24 +1,22 @@
 param prefix string
 param location string = resourceGroup().location
-
-resource logWorkSpace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: '${prefix}-workspace'
-}
-
-resource azAppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: '${prefix}-insights'
-}
+@secure()
+param instrumentationKey string
+@secure()
+param primarySharedKey string
+@secure()
+param customerId string
 
 resource environment 'Microsoft.App/managedEnvironments@2023-11-02-preview' = {
   name: '${prefix}-app-env'
   location: location
   properties: {
-    daprAIInstrumentationKey: azAppInsights.properties.InstrumentationKey
+    daprAIInstrumentationKey: instrumentationKey
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
-        customerId: logWorkSpace.properties.customerId
-        sharedKey: logWorkSpace.listKeys().primarySharedKey
+        customerId: customerId
+        sharedKey: primarySharedKey
       }
     }
   }
