@@ -5,7 +5,7 @@ targetScope = 'subscription'
 ])
 param location string = 'westeurope'
 
-var rgName = 'ab-testing-demo'
+var rgName = 'rg-abtesting'
 resource resGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: location
   name: rgName
@@ -26,17 +26,16 @@ module keyvault './General/keyvault.bicep' = {
 module logWorkSpace './General/workspace.bicep' = {
   name: 'deploy-workspace'
   scope: resGroup
-  dependsOn: [kv]
+  dependsOn: [keyvault]
   params: {
     prefix: rgName
-    keyVaultName: keyVaultName
   }
 }
 
 module insights './General/insights.bicep' = {
   name: 'deploy-insights'
   scope: resGroup
-  dependsOn: [kv]
+  dependsOn: [keyvault]
   params: {
     location: location
     logAnaliticsWorkspaceId: logWorkSpace.outputs.workpsaceId
@@ -45,25 +44,33 @@ module insights './General/insights.bicep' = {
   }
 }
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: keyVaultName
-  scope: resGroup
-}
-
 module containerEnv './General/container-env.bicep' = {
   name: 'create-env'
-  dependsOn: [kv]
+  dependsOn: [logWorkSpace, insights]
   scope: resGroup
   params: {
     location: location
     prefix: rgName
-    customerId: kv.getSecret('workspace-customerId')
-    instrumentationKey: kv.getSecret('insights-instrumentation-key')
-    primarySharedKey: kv.getSecret('workspace-shared-key')
+    customerId: logWorkSpace.outputs.customerId
+    instrumentationKey: insights.outputs.instrumentationKey
+    primarySharedKey: logWorkSpace.outputs.sharedKey
   }
 }
 
-var secretNames = [insights.outputs.kvInstrumentationKey]
+module sqlSever './General/sql.bicep' = {
+  name: 'deploy-sql'
+  dependsOn: [keyvault]
+  scope: resGroup
+  params: {
+    administratorLogin: 'abtesting'
+    administratorLoginPassword: 'abtestingdemo'
+    location: location
+    sqlDBName: 'ABTestingDemo'
+    keyVaultName: keyVaultName
+  }
+}
+
+var secretNames = [insights.outputs.kvInstrumentationKey, sqlSever.outputs.kvConnectionString]
 var envVariables = [
   {
     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -73,14 +80,14 @@ var envVariables = [
     name: 'ApplicationInsights__InstrumentationKey'
     secretRef: insights.outputs.kvInstrumentationKey
   }
-  // {
-  //   name: 'ConnectionStrings__DefaultConnection'
-  //   secretRef: 'TODO'
-  // }
-  // {
-  //   name: 'ConnectionStrings__IdentityConnection'
-  //   secretRef: 'TODO'
-  // }
+  {
+    name: 'ConnectionStrings__DefaultConnection'
+    secretRef: sqlSever.outputs.kvConnectionString
+  }
+  {
+    name: 'ConnectionStrings__IdentityConnection'
+    secretRef: sqlSever.outputs.kvConnectionString
+  }
   // {
   //   name: 'ConnectionStrings__Redis'
   //   secretRef: 'TODO'
@@ -90,7 +97,7 @@ var envVariables = [
 module webAppApi './General/container-app.bicep' = {
   name: 'web-container-deployment'
   scope: resGroup
-  dependsOn: [containerEnv, kv]
+  dependsOn: [containerEnv]
   params: {
     prefix: rgName
     location: location
@@ -104,7 +111,7 @@ module webAppApi './General/container-app.bicep' = {
 module accessPolicy './Shared/add-keyvault-policy.bicep' = {
   name: 'add-kv-access-policies'
   scope: resGroup
-  dependsOn: [webAppApi, kv]
+  dependsOn: [webAppApi]
   params: {
     keyVaultName: keyVaultName
     principalIds: [webAppApi.outputs.principalId]

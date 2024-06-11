@@ -17,6 +17,7 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
   properties: {
     tenantId: tenantId
     enableSoftDelete: true
+    enabledForDeployment: true
     softDeleteRetentionInDays: 90
     enabledForTemplateDeployment: true
     accessPolicies: [for i in principalIds: {
