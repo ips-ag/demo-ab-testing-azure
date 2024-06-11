@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 @allowed([
   'westeurope'
@@ -6,12 +6,8 @@ targetScope = 'subscription'
 param location string = 'westeurope'
 
 var prefix = 'abtesting'
-resource resGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
-  location: location
-  name: 'rg-${prefix}'
-}
-
-var keyVaultName = '${prefix}-vault'
+var resGroup = resourceGroup()
+var keyVaultName = '${prefix}-key-vault'
 module keyvault './General/keyvault.bicep' = {
   scope: resGroup
   name: 'keyvault-deployment'

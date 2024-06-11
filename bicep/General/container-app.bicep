@@ -5,7 +5,7 @@ param secretNames array = []
 param keyvaultName string
 param envVariables object[] = []
 
-var acrName ='ipsacr'
+var acrName ='abtesting'
 resource acrResource 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: acrName
   location: location
@@ -37,18 +37,18 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
         targetPort: 80
         external: true
         
-        ipSecurityRestrictions: [
-          {
-            ipAddressRange: '193.86.239.130/32'
-            action: 'Allow'
-            name: 'Ips Prague'
-          }
-          {
-            ipAddressRange: '45.122.237.234/32'
-            action: 'Allow'
-            name: 'Ips Danang'
-          }
-        ]
+        // ipSecurityRestrictions: [
+        //   {
+        //     ipAddressRange: '193.86.239.130/32'
+        //     action: 'Allow'
+        //     name: 'Ips Prague'
+        //   }
+        //   {
+        //     ipAddressRange: '45.122.237.234/32'
+        //     action: 'Allow'
+        //     name: 'Ips Danang'
+        //   }
+        // ]
         traffic: [
           {
             latestRevision: true
@@ -82,7 +82,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
             cpu: json('0.5')
             memory: '1.0Gi'
           }
-
+          
           env: concat(
             [
               {
