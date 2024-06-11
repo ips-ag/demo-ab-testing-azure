@@ -25,7 +25,7 @@ var secrets = [
 ]
 
 resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
-  name: '${prefix}-container-app'
+  name: '${prefix}-playground'
   location: location
   identity: {
     type: 'SystemAssigned'
