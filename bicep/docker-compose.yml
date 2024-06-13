@@ -44,6 +44,3 @@ services:
       - "4200:80"
     depends_on:
       - api
-
-volumes:
-  redis-data:
