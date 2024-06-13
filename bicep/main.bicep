@@ -48,7 +48,7 @@ module webAppApi './General/app-service.bicep' = {
     azAppInsightsConnectionString: insights.outputs.connectionString
     azAppInsightsInstrumentationKey: insights.outputs.instrumentationKey
     prefix: prefix
-    linuxFxVersion: 'DOTNETCORE|7.0'
+    linuxFxVersion: 'COMPOSE|${loadFileAsBase64('./docker-compose.yml')}'
     location: location
     sku: 'F1'
   }
