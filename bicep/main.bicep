@@ -7,7 +7,7 @@ param location string = 'westeurope'
 
 var prefix = 'abtesting'
 var resGroup = resourceGroup()
-var keyVaultName = '${prefix}-key-vault'
+var keyVaultName = 'kv-${prefix}'
 module keyvault './General/keyvault.bicep' = {
   scope: resGroup
   name: 'keyvault-deployment'
@@ -40,67 +40,17 @@ module insights './General/insights.bicep' = {
   }
 }
 
-module containerEnv './General/container-env.bicep' = {
-  name: 'create-env'
-  dependsOn: [logWorkSpace, insights]
+module webAppApi './General/app-service.bicep' = {
+  name: 'deploy-app-service'
+  dependsOn: [insights]
   scope: resGroup
   params: {
-    location: location
+    azAppInsightsConnectionString: insights.outputs.connectionString
+    azAppInsightsInstrumentationKey: insights.outputs.instrumentationKey
     prefix: prefix
-    customerId: logWorkSpace.outputs.customerId
-    instrumentationKey: insights.outputs.instrumentationKey
-    primarySharedKey: logWorkSpace.outputs.sharedKey
-  }
-}
-
-// module sqlSever './General/sql.bicep' = {
-//   name: 'deploy-sql'
-//   dependsOn: [keyvault]
-//   scope: resGroup
-//   params: {
-//     administratorLogin: 'abtesting'
-//     administratorLoginPassword: 'abtestingdemo'
-//     location: location
-//     sqlDBName: 'ABTestingDemo'
-//     keyVaultName: keyVaultName
-//   }
-// }
-
-var secretNames = [insights.outputs.kvInstrumentationKey]
-var envVariables = [
-  {
-    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-    secretRef: insights.outputs.kvInstrumentationKey
-  }
-  {
-    name: 'ApplicationInsights__InstrumentationKey'
-    secretRef: insights.outputs.kvInstrumentationKey
-  }
-  // {
-  //   name: 'ConnectionStrings__DefaultConnection'
-  //   secretRef: sqlSever.outputs.kvConnectionString
-  // }
-  // {
-  //   name: 'ConnectionStrings__IdentityConnection'
-  //   secretRef: sqlSever.outputs.kvConnectionString
-  // }
-  // {
-  //   name: 'ConnectionStrings__Redis'
-  //   secretRef: 'TODO'
-  // }
-]
-
-module webAppApi './General/container-app.bicep' = {
-  name: 'web-container-deployment'
-  scope: resGroup
-  dependsOn: [containerEnv]
-  params: {
-    prefix: prefix
+    linuxFxVersion: 'DOTNETCORE|7.0'
     location: location
-    environmentId: containerEnv.outputs.id
-    keyvaultName: keyVaultName
-    secretNames: secretNames
-    envVariables: envVariables
+    sku: 'F1'
   }
 }
 
@@ -110,7 +60,7 @@ module accessPolicy './Shared/add-keyvault-policy.bicep' = {
   dependsOn: [webAppApi]
   params: {
     keyVaultName: keyVaultName
-    principalIds: [webAppApi.outputs.principalId]
+    principalIds: webAppApi.outputs.principalIds
     tenantId: tenant().tenantId
   }
 }

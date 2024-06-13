@@ -26,3 +26,4 @@ module addKey '../Shared/add-keyvault-secret.bicep' = {
 
 output kvInstrumentationKey string = addKey.outputs.secretName
 output instrumentationKey string = azAppInsights.properties.InstrumentationKey
+output connectionString string = azAppInsights.properties.ConnectionString
