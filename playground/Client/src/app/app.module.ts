@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'; 
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,6 +11,7 @@ import { ErrorInterceptor } from './core/interceptor/error.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptor/loading.interceptor';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,24 +22,25 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     HttpClientModule,
     CoreModule,
     HomeModule,
-    NgxSpinnerModule.forRoot({ type: 'square-jelly-box' })
+    NgxSpinnerModule.forRoot({ type: 'square-jelly-box' }),
+    AnalyticsModule,
   ], // Add HttpClientModule to imports
-  
-  providers:[
+
+  providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
-      multi: true
+      multi: true,
     },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
-      multi: true
+      multi: true,
     },
     {
       provide: LocationStrategy,
-      useClass: HashLocationStrategy
-    }
+      useClass: HashLocationStrategy,
+    },
   ],
   bootstrap: [AppComponent],
 })
