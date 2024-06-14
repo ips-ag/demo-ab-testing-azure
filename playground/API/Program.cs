@@ -1,4 +1,3 @@
-using System.Text;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -10,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Net;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,16 +22,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<EcommerceContext>(opt =>
 {
-  opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt =>
 {
-  opt.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
+    opt.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
-  var config = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
-  return ConnectionMultiplexer.Connect(config);
+    var config = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+    return ConnectionMultiplexer.Connect(config);
 });
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 
@@ -46,12 +47,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy("AllowAngularApp", builder =>
-  {
-    builder.WithOrigins("http://localhost:4200") // Replace with the actual Angular app URL.
-          .AllowAnyHeader()
-          .AllowAnyMethod();
-  });
+    options.AddPolicy("AllowAngularApp", builder =>
+    {
+        builder.WithOrigins("http://localhost:4200") // Replace with the actual Angular app URL.
+         .AllowAnyHeader()
+         .AllowAnyMethod();
+    });
 });
 // Configure authentication and authorization middleware
 var tokenSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>();
@@ -60,37 +61,50 @@ var fileInfo = builder.Environment.ContentRootFileProvider.GetFileInfo(fileProvi
 Console.WriteLine("Using appsettings.json file at: " + fileInfo.PhysicalPath);
 builder.Services.AddAuthentication(options =>
 {
-  options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-  options.TokenValidationParameters = new TokenValidationParameters
-  {
-    ValidateIssuer = true,
-    ValidateAudience = true,
-    ValidateLifetime = true,
-    ValidateIssuerSigningKey = true,
-    ValidIssuer = tokenSettings.Issuer,
-    ValidAudience = tokenSettings.Audience,
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key))
-  };
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = tokenSettings.Issuer,
+        ValidAudience = tokenSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key))
+    };
 });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-  app.UseSwagger();
-  app.UseSwaggerUI();
-}
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode == (int)HttpStatusCode.NotFound
+        && !Path.HasExtension(context.Request.Path.Value)
+        && !context.Request.Path.Value.StartsWith("/api"))
+    {
+        context.Request.Path = "/index.html";
+        context.Response.StatusCode = (int)HttpStatusCode.OK;
+        await next();
+    }
+});
+app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } });
+app.UseStaticFiles(new StaticFileOptions
+{
+    ServeUnknownFileTypes = true,
+});
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -101,15 +115,15 @@ var logger = loggerFactory.CreateLogger<EcommerceContextSeed>();
 
 try
 {
-  await context.Database.MigrateAsync();
-  // Create an instance of EcommerceContextSeed
-  var ecommerceContextSeed = new EcommerceContextSeed(logger);
-  await ecommerceContextSeed.SeedDataAsync(context);
-  // Seed data for ApplicationIdentityDbContext
-  await ApplicationIdentityDbContextSeed.SeedAsync(services);
+    await context.Database.MigrateAsync();
+    // Create an instance of EcommerceContextSeed
+    var ecommerceContextSeed = new EcommerceContextSeed(logger);
+    await ecommerceContextSeed.SeedDataAsync(context);
+    // Seed data for ApplicationIdentityDbContext
+    await ApplicationIdentityDbContextSeed.SeedAsync(services);
 }
 catch (Exception ex)
 {
-  logger.LogError(ex, "An error occured during migration");
+    logger.LogError(ex, "An error occured during migration");
 }
 app.Run();

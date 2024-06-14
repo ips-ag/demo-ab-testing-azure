@@ -25,31 +25,20 @@ services:
     ports:
       - "8081:8081"
 
-  api:
+  app:
     networks:
       - playground-network
-    image: "abtestingplayground.azurecr.io/playground-api:latest"
+    image: "abtestingplayground.azurecr.io/playground:latest"
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: "app-api"
+      args:
+        progress: plain
+    container_name: "playground"
     ports:
       - "5103:80"
     depends_on:
       - redis
-
-  client:
-    networks:
-      - playground-network
-    image: "abtestingplayground.azurecr.io/playground-client:latest"
-    build:
-      context: ./CLIENT
-      dockerfile: Dockerfile
-    container_name: "app-client"
-    ports:
-      - "4200:80"
-    depends_on:
-      - api
 
 volumes:
   redis-data:

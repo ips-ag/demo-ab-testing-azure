@@ -41,6 +41,7 @@ resource acrResource 'Microsoft.ContainerRegistry/registries@2023-11-01-preview'
   }
   properties: {
     adminUserEnabled: true
+    
   }
 }
 var credential = acrResource.listCredentials()

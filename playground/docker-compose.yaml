@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     container_name: "my-api-container"
     ports:
-      - "5103:80"
+      - "5103:5103"
     depends_on:
       - redis
 
