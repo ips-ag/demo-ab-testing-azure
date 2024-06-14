@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Basket, BasketItem, BasketTotal } from '../shared/models/basket';
 import { Product } from '../shared/models/Product';
 import { DeliveryOption } from '../shared/models/deliveryOption';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class BasketService {
     total: 0
   });
   basketTotalSubject$ = this.basketTotalSubject.asObservable();
-  private readonly basketUrl = 'http://localhost:5103/api/Basket/'; 
+  private readonly basketUrl = `${environment.baseUrl}/api/Basket/`; 
 
 
   constructor(private http: HttpClient) {}

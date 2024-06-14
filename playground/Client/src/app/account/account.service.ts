@@ -4,13 +4,14 @@ import { User } from '../shared/models/user';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
   redirectUrl: string | null = null;
-  private apiUrl = 'http://localhost:5103/api/Account';
+  private apiUrl = `${environment.baseUrl}/api/Account`;
   private userSource = new BehaviorSubject<User | null>(null);
   userSource$ = this.userSource.asObservable();
 

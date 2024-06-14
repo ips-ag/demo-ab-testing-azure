@@ -1,0 +1,55 @@
+version: '3.8'
+
+networks:
+  playground-network:
+    driver: bridge
+
+services:
+  redis:
+    networks:
+      - playground-network
+    image: "abtestingplayground.azurecr.io/redis:latest"
+    container_name: "redis"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  redis-commander:
+    networks:
+      - playground-network
+    image: "abtestingplayground.azurecr.io/rediscommander/redis-commander:latest"
+    container_name: "redis-commander"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+
+  api:
+    networks:
+      - playground-network
+    image: "abtestingplayground.azurecr.io/playground-api:latest"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "app-api"
+    ports:
+      - "5103:80"
+    depends_on:
+      - redis
+
+  client:
+    networks:
+      - playground-network
+    image: "abtestingplayground.azurecr.io/playground-client:latest"
+    build:
+      context: ./CLIENT
+      dockerfile: Dockerfile
+    container_name: "app-client"
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+
+volumes:
+  redis-data:

@@ -4,4 +4,5 @@ export const environment = {
     clarityId: 'mq8lp34s8t',
     googleAnalyticsMeasurementId: 'G-CJLP5B10EW',
   },
+  baseUrl: ''
 };
