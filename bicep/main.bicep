@@ -7,7 +7,7 @@ param location string = 'westeurope'
 
 var prefix = 'abtesting'
 var resGroup = resourceGroup()
-var keyVaultName = 'kv-${prefix}'
+var keyVaultName = '${prefix}-key-vault'
 module keyvault './General/keyvault.bicep' = {
   scope: resGroup
   name: 'keyvault-deployment'
@@ -40,17 +40,42 @@ module insights './General/insights.bicep' = {
   }
 }
 
-module webAppApi './General/app-service.bicep' = {
-  name: 'deploy-app-service'
-  dependsOn: [insights]
+module containerEnv './General/container-env.bicep' = {
+  name: 'create-env'
+  dependsOn: [logWorkSpace, insights]
   scope: resGroup
   params: {
-    azAppInsightsConnectionString: insights.outputs.connectionString
-    azAppInsightsInstrumentationKey: insights.outputs.instrumentationKey
-    prefix: prefix
-    linuxFxVersion: 'COMPOSE|${loadFileAsBase64('./docker-compose.yml')}'
     location: location
-    sku: 'F1'
+    prefix: prefix
+    customerId: logWorkSpace.outputs.customerId
+    instrumentationKey: insights.outputs.instrumentationKey
+    primarySharedKey: logWorkSpace.outputs.sharedKey
+  }
+}
+
+var secretNames = [insights.outputs.kvInstrumentationKey]
+var envVariables = [
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    secretRef: insights.outputs.kvInstrumentationKey
+  }
+  {
+    name: 'ApplicationInsights__InstrumentationKey'
+    secretRef: insights.outputs.kvInstrumentationKey
+  }
+]
+
+module webAppApi './General/container-app.bicep' = {
+  name: 'web-container-deployment'
+  scope: resGroup
+  dependsOn: [containerEnv]
+  params: {
+    prefix: prefix
+    location: location
+    environmentId: containerEnv.outputs.id
+    keyvaultName: keyVaultName
+    secretNames: secretNames
+    envVariables: envVariables
   }
 }
 
@@ -60,7 +85,7 @@ module accessPolicy './Shared/add-keyvault-policy.bicep' = {
   dependsOn: [webAppApi]
   params: {
     keyVaultName: keyVaultName
-    principalIds: webAppApi.outputs.principalIds
+    principalIds: [webAppApi.outputs.principalId]
     tenantId: tenant().tenantId
   }
 }
