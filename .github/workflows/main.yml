@@ -42,5 +42,5 @@ jobs:
             containerAppName: abtesting-playground
             containerAppEnvironment: abtesting-app-env
             resourceGroup: rg-abtesting
-            imageToBuild: abtesting.azurecr.io/playground:latest
+            imageToBuild: abtesting.azurecr.io/playground:latest #<Tag e.g. ${{ github.sha }}>
             dockerfilePath: playground/Dockerfile
