@@ -35,7 +35,7 @@ jobs:
         - name: Build and deploy Container App
           uses: azure/container-apps-deploy-action@v1
           with:
-            appSourcePath: ${{ github.workspace }}
+            appSourcePath: ${{ github.workspace }}/playground
             acrName: abtesting
             acrUsername: ${{ secrets.REGISTRY_USERNAME }}
             acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
@@ -43,4 +43,4 @@ jobs:
             containerAppEnvironment: abtesting-app-env
             resourceGroup: rg-abtesting
             imageToBuild: abtesting.azurecr.io/playground:latest #<Tag e.g. ${{ github.sha }}>
-            dockerfilePath: playground/Dockerfile
+            dockerfilePath: Dockerfile
