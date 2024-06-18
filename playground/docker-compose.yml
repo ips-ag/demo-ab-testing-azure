@@ -4,27 +4,7 @@ networks:
   playground-network:
     driver: bridge
 
-services:
-  redis:
-    networks:
-      - playground-network
-    image: "abtesting.azurecr.io/redis:latest"
-    container_name: "redis"
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-
-  redis-commander:
-    networks:
-      - playground-network
-    image: "abtesting.azurecr.io/rediscommander/redis-commander:latest"
-    container_name: "redis-commander"
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-    ports:
-      - "8081:8081"
-
+services:  
   app:
     networks:
       - playground-network
@@ -37,8 +17,6 @@ services:
     container_name: "playground"
     ports:
       - "5103:80"
-    depends_on:
-      - redis
 
 volumes:
   redis-data:
