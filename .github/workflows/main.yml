@@ -1,0 +1,45 @@
+# The name of the deployment
+name: Trigger auto deployment for containerapps
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    # Branched to look out for changes on
+    branches: 
+      [ main ]
+
+  # Allow manually trigger of the jobs
+  workflow_dispatch:      
+
+jobs:
+  # Job run image.
+    build:
+      runs-on: ubuntu-latest
+
+   # Steps that need to happen in this job run.
+      steps:
+        # Check out the code
+        - name: Check out code
+          uses: actions/checkout@v2
+
+        # Log in to Azure CLI
+        - name: Log in to Azure
+          uses: azure/login@v1
+          with:
+      # Azure CLI credentials
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        # Build and deploy the container app
+        - name: Build and deploy Container App
+          uses: azure/container-apps-deploy-action@v1
+          with:
+            appSourcePath: ${{ github.workspace }}
+            acrName: abtesting.azurecr.io
+            acrUsername: ${{ secrets.REGISTRY_USERNAME }}
+            acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
+            containerAppName: abtesting-playground
+            containerAppEnvironment: abtesting-app-env
+            resourceGroup: rg-abtesting
+            imageToBuild: abtesting.azurecr.io/playground:latest
+            dockerfilePath: playground/Dockerfile
