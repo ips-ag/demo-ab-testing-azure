@@ -5,3 +5,4 @@
 *.user
 /playground/API/Ecommerce.db-*
 /playground/API/wwwrooot
+*.bk.*
