@@ -26,12 +26,18 @@ param tags object = {
 }
 @description('Specifies the name of the key vault.')
 param keyVaultName string
+param appInsightsId string
 
 resource configStore 'Microsoft.AppConfiguration/configurationStores@2023-09-01-preview' = {
   name: configStoreName
   location: location
   sku: {
     name: 'free'
+  }
+  properties: {
+    telemetry: {
+      resourceId: appInsightsId
+    }
   }
 }
 

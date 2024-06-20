@@ -51,6 +51,7 @@ module appConfig './General/app-config.bicep' = {
     keyVaultName: keyVaultName
     configStoreName: '${prefix}-app-configs'
     location: location
+    appInsightsId: insights.outputs.resourceId
   }
 }
 
