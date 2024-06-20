@@ -23,6 +23,7 @@ module addKey '../Shared/add-keyvault-secret.bicep' = {
     secretValue: azAppInsights.properties.InstrumentationKey
   }
 }
-
+output resourceId string = azAppInsights.id
 output kvInstrumentationKey string = addKey.outputs.secretName
 output instrumentationKey string = azAppInsights.properties.InstrumentationKey
+
