@@ -45,9 +45,9 @@ jobs:
             imageToBuild: abtesting.azurecr.io/playground:${{ github.sha }}
             dockerfilePath: Dockerfile
             environmentVariables: 
-              ANALYTICS_CLARITY_ID=${{ secrets.REGISTRY_USERNAME }}
-              GOOGLE_ANALYTICS_MEASUREMENT_ID=${{ secrets.ANALYTICS_GA_MEASUREMENT_ID }}
-              ConnectionStrings__AppConfig=secretRef:app-config-cs
-              APPINSIGHTS_INSTRUMENTATIONKEY=secretRef:insights-instrumentation-key
-              ApplicationInsights__InstrumentationKey=secretRef:insights-instrumentation-key
+              ANALYTICS_CLARITY_ID=${{ secrets.ANALYTICS_CLARITY_ID }}
+              ANALYTICS_GA_MEASUREMENT_ID=${{ secrets.ANALYTICS_GA_MEASUREMENT_ID }}
+              ConnectionStrings__AppConfig=secretref:app-config-cs
+              APPINSIGHTS_INSTRUMENTATIONKEY=secretref:insights-instrumentation-key
+              ApplicationInsights__InstrumentationKey=secretref:insights-instrumentation-key
               WEBSITES_PORT=80

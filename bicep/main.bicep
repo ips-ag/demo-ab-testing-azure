@@ -82,7 +82,7 @@ var envVariables = [
     value: analyticsClarityId
   }
   {
-    name: 'GOOGLE_ANALYTICS_MEASUREMENT_ID'
+    name: 'ANALYTICS_GA_MEASUREMENT_ID'
     value: googleAnalyticsMesurementId
   }
   {
