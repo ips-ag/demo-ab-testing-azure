@@ -44,3 +44,4 @@ jobs:
             resourceGroup: rg-abtesting
             imageToBuild: abtesting.azurecr.io/playground:latest #<Tag e.g. ${{ github.sha }}>
             dockerfilePath: Dockerfile
+            imageToDeploy: abtesting.azurecr.io/playground:latest
