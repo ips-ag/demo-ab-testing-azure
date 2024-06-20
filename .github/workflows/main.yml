@@ -51,3 +51,6 @@ jobs:
               APPINSIGHTS_INSTRUMENTATIONKEY=secretref:insights-instrumentation-key
               ApplicationInsights__InstrumentationKey=secretref:insights-instrumentation-key
               WEBSITES_PORT=80
+            buildArguments:
+              ANALYTICS_CLARITY_ID=${{ secrets.ANALYTICS_CLARITY_ID }}
+              ANALYTICS_GA_MEASUREMENT_ID=${{ secrets.ANALYTICS_GA_MEASUREMENT_ID }}
