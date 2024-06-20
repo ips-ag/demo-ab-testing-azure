@@ -4,6 +4,10 @@ targetScope = 'resourceGroup'
   'westeurope'
 ])
 param location string = 'westeurope'
+@secure()
+param analyticsClarityId string
+@secure()
+param googleAnalyticsMesurementId string
 
 var prefix = 'abtesting'
 var resGroup = resourceGroup()
@@ -62,6 +66,14 @@ var envVariables = [
   {
     name: 'ApplicationInsights__InstrumentationKey'
     secretRef: insights.outputs.kvInstrumentationKey
+  }
+  {
+    name: 'ANALYTICS_CLARITY_ID'
+    value: analyticsClarityId
+  }
+  {
+    name: 'GOOGLE_ANALYTICS_MEASUREMENT_ID'
+    value: googleAnalyticsMesurementId
   }
 ]
 

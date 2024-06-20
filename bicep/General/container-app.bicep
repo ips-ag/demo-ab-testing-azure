@@ -76,7 +76,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
     template: {
       containers: [
         {
-          image: 'mcr.microsoft.com/k8se/quickstart:latest'
+          image: 'abtesting.azurecr.io/playground:latest'
           name: 'playground'
           resources: {
             cpu: json('0.5')
