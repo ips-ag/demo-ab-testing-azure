@@ -19,7 +19,6 @@ module keyvault './General/keyvault.bicep' = {
     keyVaultName: keyVaultName
     location: location
     tenantId: tenant().tenantId
-    principalIds: []
   }
 }
 
@@ -44,6 +43,17 @@ module insights './General/insights.bicep' = {
   }
 }
 
+module appConfig './General/app-config.bicep' = {
+  name: 'deploy-app-config'
+  scope: resGroup
+  dependsOn: [keyvault]
+  params: {
+    keyVaultName: keyVaultName
+    configStoreName: '${prefix}-app-configs'
+    location: location
+  }
+}
+
 module containerEnv './General/container-env.bicep' = {
   name: 'create-env'
   dependsOn: [logWorkSpace, insights]
@@ -57,7 +67,7 @@ module containerEnv './General/container-env.bicep' = {
   }
 }
 
-var secretNames = [insights.outputs.kvInstrumentationKey]
+var secretNames = [insights.outputs.kvInstrumentationKey, appConfig.outputs.secretName]
 var envVariables = [
   {
     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -75,9 +85,13 @@ var envVariables = [
     name: 'GOOGLE_ANALYTICS_MEASUREMENT_ID'
     value: googleAnalyticsMesurementId
   }
+  {
+    name: 'ConnectionStrings__AppConfig'
+    secretRef: appConfig.outputs.secretName
+  }
 ]
 
-module webAppApi './General/container-app.bicep' = {
+module containerApp './General/container-app.bicep' = {
   name: 'web-container-deployment'
   scope: resGroup
   dependsOn: [containerEnv]
@@ -94,10 +108,10 @@ module webAppApi './General/container-app.bicep' = {
 module accessPolicy './Shared/add-keyvault-policy.bicep' = {
   name: 'add-kv-access-policies'
   scope: resGroup
-  dependsOn: [webAppApi]
+  dependsOn: [containerApp]
   params: {
     keyVaultName: keyVaultName
-    principalIds: [webAppApi.outputs.principalId]
+    principalIds: [containerApp.outputs.principalId, '860ff5b0-134d-4d9b-8a18-1f996f3c52e1']
     tenantId: tenant().tenantId
   }
 }

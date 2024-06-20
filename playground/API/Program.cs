@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
+using static System.ArgumentNullException;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +28,11 @@ builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
+var connectionString = builder.Configuration.GetConnectionString("AppConfig");
+ThrowIfNull(connectionString);
+builder.Configuration.AddAzureAppConfiguration(connectionString);
 builder.Services.AddDistributedMemoryCache();
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
-
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IBasketRepository, RedisBasketRepository>();
 builder.Services.AddScoped<ITokenGenerationService, TokenGenerationService>();
