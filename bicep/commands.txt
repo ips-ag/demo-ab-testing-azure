@@ -1,4 +1,4 @@
 az login
 az account set --subscription "Uros3 VS Enterprise Subscription"
-az deployment group create --name ab-testing-playground --resource-group rg-abtesting --confirm-with-what-if --template-file main.bicep
+az deployment group create --name ab-testing-playground --resource-group rg-abtesting --confirm-with-what-if --template-file main.bicep --parameters analyticsClarityId=analyticsClarityId googleAnalyticsMesurementId=googleAnalyticsMesurementId
 az deployment group create --name ab-testing-playground --resource-group rg-uyen-abtesting --confirm-with-what-if --template-file main.bicep

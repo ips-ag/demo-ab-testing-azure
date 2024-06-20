@@ -1,41 +1,38 @@
-using System.Text.Json;
 using Core.Entities;
 using Core.Interfaces;
-using StackExchange.Redis;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
 
 namespace Infrastructure.Data.Repositories
 {
     public class RedisBasketRepository : IBasketRepository
     {
-        private readonly IConnectionMultiplexer _redisConnection;
+        private readonly IDistributedCache _distributedCache;
 
-        public RedisBasketRepository(IConnectionMultiplexer redisConnection)
+        public RedisBasketRepository(IDistributedCache __distributedCache)
         {
-            _redisConnection = redisConnection ?? throw new ArgumentNullException(nameof(redisConnection));
+            _distributedCache = __distributedCache;
         }
 
         public async Task<Basket> GetBasketAsync(string basketId)
         {
-            var database = _redisConnection.GetDatabase();
-            var basketData = await database.StringGetAsync(GetRedisKey(basketId));
-
-            return basketData.IsNullOrEmpty
+            var objectFromCache = await _distributedCache.GetAsync(GetRedisKey(basketId));
+            return objectFromCache.IsNullOrEmpty()
                 ? null
-                : JsonSerializer.Deserialize<Basket>(basketData);
+                : JsonSerializer.Deserialize<Basket>(objectFromCache);
         }
 
         public async Task<Basket> UpdateBasketAsync(Basket basket)
         {
-            var database = _redisConnection.GetDatabase();
-            await database.StringSetAsync(GetRedisKey(basket.Id), JsonSerializer.Serialize(basket));
-
+            await _distributedCache.SetStringAsync(GetRedisKey(basket.Id), JsonSerializer.Serialize(basket));
             return basket;
         }
 
         public async Task<bool> DeleteBasketAsync(string basketId)
         {
-            var database = _redisConnection.GetDatabase();
-            return await database.KeyDeleteAsync(GetRedisKey(basketId));
+            await _distributedCache.RemoveAsync(GetRedisKey(basketId));
+            return true;
         }
 
         private static string GetRedisKey(string basketId) => $"Basket:{basketId}";

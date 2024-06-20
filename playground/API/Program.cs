@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using StackExchange.Redis;
 using System.Net;
 using System.Text;
 
@@ -28,11 +27,7 @@ builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
-builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
-{
-    var config = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
-    return ConnectionMultiplexer.Connect(config);
-});
+builder.Services.AddDistributedMemoryCache();
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
