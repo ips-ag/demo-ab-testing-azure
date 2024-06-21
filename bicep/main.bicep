@@ -68,7 +68,7 @@ module containerEnv './General/container-env.bicep' = {
   }
 }
 
-var secretNames = [insights.outputs.kvInstrumentationKey, appConfig.outputs.secretName]
+var secretNames = [insights.outputs.kvInstrumentationKey, appConfig.outputs.secretName, insights.outputs.kvConnection]
 var envVariables = [
   {
     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -89,6 +89,10 @@ var envVariables = [
   {
     name: 'ConnectionStrings__AppConfig'
     secretRef: appConfig.outputs.secretName
+  }
+  {
+    name: 'ConnectionStrings__AppInsights'
+    secretRef: insights.outputs.kvConnection
   }
 ]
 
