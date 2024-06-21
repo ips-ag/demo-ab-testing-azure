@@ -1,12 +1,18 @@
+using API.Contexts;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Identity;
 using Infrastructure.Services;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.Telemetry;
+using Microsoft.FeatureManagement.Telemetry.ApplicationInsights.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
@@ -15,7 +21,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddAzureAppConfiguration(options =>
     options.Connect(builder.Configuration.GetConnectionString("AppConfig"))
-    .UseFeatureFlags(ffo => ffo.CacheExpirationInterval = TimeSpan.FromMinutes(5)));
+    .UseFeatureFlags(ffo =>
+    {
+        ffo.CacheExpirationInterval = TimeSpan.FromSeconds(5);
+        //ffo.Label = "dev";
+    }));
 //
 // Add services to the container.
 builder.Services.AddControllers();
@@ -30,7 +40,20 @@ builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
-builder.Services.AddAzureAppConfiguration();
+//
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddAzureAppConfiguration()
+    .AddFeatureManagement()
+    .WithTargeting<TargetingContextAccessor>()
+    .AddTelemetryPublisher<ApplicationInsightsTelemetryPublisher>();
+builder.Services.AddApplicationInsightsTelemetry(
+    new ApplicationInsightsServiceOptions
+    {
+        ConnectionString = builder.Configuration.GetConnectionString("AppInsights"),
+        EnableAdaptiveSampling = false
+    })
+    .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
+//
 builder.Services.AddDistributedMemoryCache();
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -85,7 +108,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAzureAppConfiguration();
-
+app.UseMiddleware<TargetingHttpContextMiddleware>();
+//
 app.MapControllers();
 app.Use(async (context, next) =>
 {
