@@ -1,8 +1,9 @@
-﻿using Microsoft.FeatureManagement.FeatureFilters;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.FeatureManagement.FeatureFilters;
 
-namespace API.Contexts;
+namespace Ips.AbTesting.Contexts;
 
-public class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor) : ITargetingContextAccessor
+internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor) : ITargetingContextAccessor
 {
     private const string TargetingContextLookup = "TargetingContextAccessor.TargetingContext";
 

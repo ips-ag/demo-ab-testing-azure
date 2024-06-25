@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.FeatureManagement;
 
-namespace API.Controllers;
+namespace Ips.AbTesting.Services;
 
-[Route("api/ab-testing")]
-[ApiController]
-public class AbTestingController(IVariantFeatureManagerSnapshot featureManager) : ControllerBase
+public interface IConfigurationService
 {
-    [HttpGet("feature-flags")]
-    public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
+    Task<IReadOnlyDictionary<string, dynamic>> ReadFeatureFlagsAsync(CancellationToken ct = default);
+}
+
+internal class ConfigurationService(IVariantFeatureManagerSnapshot featureManager) : IConfigurationService
+{
+    public async Task<IReadOnlyDictionary<string, dynamic>> ReadFeatureFlagsAsync(CancellationToken ct = default)
     {
         var featureFlags = new Dictionary<string, dynamic>();
         var featureNames = featureManager.GetFeatureNamesAsync(ct).ToBlockingEnumerable(ct);
@@ -17,6 +19,6 @@ public class AbTestingController(IVariantFeatureManagerSnapshot featureManager) 
             var variant = await featureManager.GetVariantAsync(featureName, ct).ConfigureAwait(false);
             featureFlags.Add(featureName, variant != null ? variant.Configuration.Get<dynamic>() : await featureManager.IsEnabledAsync(featureName, ct));
         }
-        return Ok(featureFlags);
+        return featureFlags;
     }
 }
