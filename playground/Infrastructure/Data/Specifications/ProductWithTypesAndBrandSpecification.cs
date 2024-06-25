@@ -1,5 +1,6 @@
 using Core.Entities;
-using Infrastructure.Data.Specifications;
+
+namespace Infrastructure.Data.Specifications;
 
 public class ProductWithTypesAndBrandSpecification : BaseSpecification<Product>
 {
@@ -49,11 +50,11 @@ public class ProductWithTypesAndBrandSpecification : BaseSpecification<Product>
         // Apply search criteria
         if (!string.IsNullOrEmpty(search))
         {
-            ApplyCriteria(p => p.Name.ToLower().Contains(search.ToLower()));
+            ApplyCriteria(p => p.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 
-    public ProductWithTypesAndBrandSpecification(int id) : base(product=>product.Id==id)
+    public ProductWithTypesAndBrandSpecification(int id) : base(product => product.Id == id)
     {
         AddInclude(p => p.ProductType);
         AddInclude(p => p.ProductBrand);

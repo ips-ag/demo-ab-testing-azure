@@ -2,29 +2,23 @@
 
 namespace API.Contexts;
 
-public class TargetingContextAccessor : ITargetingContextAccessor
+public class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor) : ITargetingContextAccessor
 {
-    private const string TargetingContextLookup = "ExampleTargetingContextAccessor.TargetingContext";
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public TargetingContextAccessor(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-    }
+    private const string TargetingContextLookup = "TargetingContextAccessor.TargetingContext";
 
     public ValueTask<TargetingContext> GetContextAsync()
     {
-        HttpContext httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext.Items.TryGetValue(TargetingContextLookup, out object value))
+        HttpContext httpContext = httpContextAccessor.HttpContext!;
+        if (httpContext.Items.TryGetValue(TargetingContextLookup, out var value))
         {
-            return new ValueTask<TargetingContext>((TargetingContext)value);
+            return new ValueTask<TargetingContext>((TargetingContext)value!);
         }
-        List<string> groups = new List<string>();
-        if (httpContext.User.Identity.Name != null)
+        List<string> groups = [];
+        if (httpContext.User?.Identity?.Name != null)
         {
             groups.Add(httpContext.User.Identity.Name.Split("@", StringSplitOptions.None)[1]);
         }
-        TargetingContext targetingContext = new TargetingContext
+        TargetingContext targetingContext = new()
         {
             //UserId = httpContext.User.Identity.Name ?? "guest",
             // TODO

@@ -18,13 +18,12 @@ using System.Net;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Configuration.AddJsonFile("local.settings.json", optional: true);
 builder.Configuration.AddAzureAppConfiguration(options =>
     options.Connect(builder.Configuration.GetConnectionString("AppConfig"))
     .UseFeatureFlags(ffo =>
     {
         ffo.CacheExpirationInterval = TimeSpan.FromSeconds(5);
-        //ffo.Label = "dev";
     }));
 //
 // Add services to the container.
@@ -76,7 +75,7 @@ builder.Services.AddCors(options =>
     });
 });
 // Configure authentication and authorization middleware
-var tokenSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>();
+var tokenSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>()!;
 var fileProvider = "appsettings.json";
 var fileInfo = builder.Environment.ContentRootFileProvider.GetFileInfo(fileProvider);
 Console.WriteLine("Using appsettings.json file at: " + fileInfo.PhysicalPath);
@@ -116,6 +115,7 @@ app.Use(async (context, next) =>
     await next();
     if (context.Response.StatusCode == (int)HttpStatusCode.NotFound
         && !Path.HasExtension(context.Request.Path.Value)
+        && context.Request.Path.Value != null
         && !context.Request.Path.Value.StartsWith("/api"))
     {
         context.Request.Path = "/index.html";
@@ -123,7 +123,7 @@ app.Use(async (context, next) =>
         await next();
     }
 });
-app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } });
+app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = ["index.html"] });
 app.UseStaticFiles(new StaticFileOptions
 {
     ServeUnknownFileTypes = true,

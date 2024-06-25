@@ -6,3 +6,4 @@
 /playground/API/Ecommerce.db-*
 /playground/API/wwwrooot
 *.bk.*
+/playground/API/local.settings.json
