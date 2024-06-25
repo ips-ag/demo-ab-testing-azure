@@ -44,3 +44,14 @@ jobs:
             resourceGroup: rg-abtesting
             imageToBuild: abtesting.azurecr.io/playground:${{ github.sha }}
             dockerfilePath: Dockerfile
+            environmentVariables: 
+              ANALYTICS_CLARITY_ID=${{ secrets.ANALYTICS_CLARITY_ID }}
+              ANALYTICS_GA_MEASUREMENT_ID=${{ secrets.ANALYTICS_GA_MEASUREMENT_ID }}
+              ConnectionStrings__AppConfig=secretref:app-config-cs
+              APPINSIGHTS_INSTRUMENTATIONKEY=secretref:insights-instrumentation-key
+              ApplicationInsights__InstrumentationKey=secretref:insights-instrumentation-key
+              WEBSITES_PORT=80
+              ConnectionStrings__AppInsights=secretref:insights-cs
+            buildArguments:
+              ANALYTICS_CLARITY_ID=${{ secrets.ANALYTICS_CLARITY_ID }}
+              ANALYTICS_GA_MEASUREMENT_ID=${{ secrets.ANALYTICS_GA_MEASUREMENT_ID }}

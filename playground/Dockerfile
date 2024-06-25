@@ -11,6 +11,7 @@ COPY Client/ .
 # Use 'COPY Client/ .' to copy the content of the Client directory
 RUN npm install
 ENV ANALYTICS_CLARITY_ID=${ANALYTICS_CLARITY_ID}
+ENV ANALYTICS_GA_MEASUREMENT_ID=${ANALYTICS_GA_MEASUREMENT_ID}
 RUN npm run build
 
 # Restore dependencies for the .NET project

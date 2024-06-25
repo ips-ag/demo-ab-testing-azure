@@ -5,7 +5,7 @@ param secretNames array = []
 param keyvaultName string
 param envVariables object[] = []
 
-var acrName ='abtesting'
+var acrName = 'abtesting'
 resource acrResource 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: acrName
   location: location
@@ -24,6 +24,7 @@ var secrets = [
   }
 ]
 
+var registryPasswordSecret = '${replace(acrResource.properties.loginServer, '.', '')}-${acrResource.listCredentials().username}'
 resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
   name: '${prefix}-playground'
   location: location
@@ -36,7 +37,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
       ingress: {
         targetPort: 80
         external: true
-        
+
         // ipSecurityRestrictions: [
         //   {
         //     ipAddressRange: '193.86.239.130/32'
@@ -60,13 +61,13 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
         {
           server: acrResource.properties.loginServer
           username: acrResource.listCredentials().username
-          passwordSecretRef: 'registry-password'
+          passwordSecretRef: registryPasswordSecret
         }
       ]
       secrets: concat(
         [
           {
-            name: 'registry-password'
+            name: registryPasswordSecret
             value: acrResource.listCredentials().passwords[0].value
           }
         ],
@@ -82,7 +83,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
             cpu: json('0.5')
             memory: '1.0Gi'
           }
-          
+
           env: concat(
             [
               {
@@ -94,7 +95,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-11-02-preview' = {
           )
         }
       ]
-      
+
       scale: {
         minReplicas: 0
         maxReplicas: 3

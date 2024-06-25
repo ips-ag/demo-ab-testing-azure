@@ -24,5 +24,18 @@ module addKey '../Shared/add-keyvault-secret.bicep' = {
   }
 }
 
+module addConnectionKey '../Shared/add-keyvault-secret.bicep' = {
+  name: 'add-insights-connection-key'
+  scope: resourceGroup()
+  params: {
+    keyVaultName: keyVaultName
+    secretName: 'insights-cs'
+    secretValue: azAppInsights.properties.ConnectionString
+  }
+}
+
+output resourceId string = azAppInsights.id
 output kvInstrumentationKey string = addKey.outputs.secretName
+output kvConnection string = addConnectionKey.outputs.secretName
 output instrumentationKey string = azAppInsights.properties.InstrumentationKey
+

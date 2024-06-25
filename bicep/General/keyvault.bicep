@@ -7,8 +7,6 @@ param location string
   'premium'
 ])
 param skuName string = 'standard'
-@description('Specifies the list of principalsto access this keyvault')
-param principalIds array = []
 param tenantId string
 
 resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
@@ -20,15 +18,7 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
     enabledForDeployment: true
     softDeleteRetentionInDays: 90
     enabledForTemplateDeployment: true
-    accessPolicies: [for i in principalIds: {
-      objectId: i
-      tenantId: tenantId
-      permissions: {
-        secrets: [
-          'get'
-        ]
-      }
-    }]
+    createMode: 'recover'
     sku: {
       name: skuName
       family: 'A'
