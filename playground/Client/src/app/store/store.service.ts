@@ -8,7 +8,6 @@ import { Type } from '../shared/models/type';
 import { StoreParams } from '../shared/models/storeParams';
 import { environment } from 'src/environments/environment';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -25,18 +24,24 @@ export class StoreService {
       .set('skip', params.skip.toString())
       .set('take', params.take.toString());
 
-    if (params.productBrandId !== 0) {
-      httpParams = httpParams.set('productBrandId', params.productBrandId.toString());
+    if (!params.productBrandIds?.includes(0)) {
+      httpParams = httpParams.set(
+        'productBrandIds',
+        encodeURIComponent(JSON.stringify(params.productBrandIds ?? []))
+      );
     }
 
     if (params.productTypeId !== 0) {
-      httpParams = httpParams.set('productTypeId', params.productTypeId.toString());
+      httpParams = httpParams.set(
+        'productTypeId',
+        params.productTypeId.toString()
+      );
     }
 
     if (params.search) {
       httpParams = httpParams.set('search', params.search); // Add the search parameter to the query
     }
-    
+
     httpParams = httpParams.set('pageIndex', params.pageNumber);
     httpParams = httpParams.set('pageSize', params.pageSize);
 
@@ -46,7 +51,7 @@ export class StoreService {
     return this.http.get<Pagination<Product>>(url, { params: httpParams });
   }
 
-  getProduct(id:number){
+  getProduct(id: number) {
     return this.http.get<Product>(this.apiUrl + id);
   }
   // Add a method to filter products based on brand and type

@@ -18,7 +18,10 @@ export class StoreComponent implements OnInit {
   types: Type[] = [];
   params: StoreParams = new StoreParams();
   totalCount = 0;
-  constructor(private storeService: StoreService, private toastr: ToastrService) {}
+  constructor(
+    private storeService: StoreService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.getBrands();
@@ -26,8 +29,8 @@ export class StoreComponent implements OnInit {
     this.fetchProducts();
   }
 
-  selectBrand(brandId: number) {
-    this.params.productBrandId = brandId;
+  selectBrand(brandIds: number[]) {
+    this.params.productBrandIds = brandIds;
     this.fetchProducts();
   }
 
@@ -61,10 +64,9 @@ export class StoreComponent implements OnInit {
       this.params.originalProducts = [...this.products]; // Store the original products
       this.params.pageNumber = products.pageIndex;
       this.params.pageSize = products.pageSize;
-      this.totalCount = products.totalItems;        
-      this.toastr.success('Products fetched'); 
+      this.totalCount = products.totalItems;
+      this.toastr.success('Products fetched');
     });
-    
   }
 
   searchProducts() {

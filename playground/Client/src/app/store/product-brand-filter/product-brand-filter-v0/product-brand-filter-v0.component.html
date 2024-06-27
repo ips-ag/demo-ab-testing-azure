@@ -1,0 +1,11 @@
+<ul class="list-group my-3">
+  <li
+    class="list-group-item"
+    *ngFor="let brand of brands; let i = index"
+    [class.active]="params.productBrandIds.includes(brand.id)"
+    [value]="brand.id"
+    (click)="selectBrand([brand.id])"
+  >
+    {{ brand.name }}
+  </li>
+</ul>

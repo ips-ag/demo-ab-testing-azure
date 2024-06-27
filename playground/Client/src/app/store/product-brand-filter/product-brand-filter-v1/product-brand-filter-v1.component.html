@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row">
+    <div class="col-2 slider-wrapper">
+      <ngx-slider
+        [options]="sliderOptions"
+        [value]="(minSliderValue$ | async) ?? 0"
+        (valueChange)="minSliderValue$.next($event)"
+        [highValue]="(maxSliderValue$ | async) ?? 1"
+        (highValueChange)="maxSliderValue$.next($event)"
+      ></ngx-slider>
+    </div>
+    <div class="col-10">
+      <ul class="list-group my-3">
+        <li
+          class="list-group-item"
+          *ngFor="let brand of brands; let i = index"
+          [class.active]="((selectedBrands$ | async) ?? []).includes(brand.id)"
+          [value]="brand.id"
+          (click)="selectBrand([brand.id])"
+        >
+          {{ brand.name }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

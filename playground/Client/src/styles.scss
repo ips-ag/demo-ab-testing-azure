@@ -2,7 +2,18 @@
 
 /* Importing Bootstrap SCSS file. */
 
-
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+.ngx-slider-model-value,
+.ngx-slider-model-high,
+.ngx-slider-floor,
+.ngx-slider-ceil,
+.ngx-slider-combined {
+  color: transparent !important;
+}

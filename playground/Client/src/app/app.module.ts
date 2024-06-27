@@ -12,7 +12,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptor/loading.interceptor';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AnalyticsModule } from './analytics/analytics.module';
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
