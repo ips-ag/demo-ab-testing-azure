@@ -4,6 +4,6 @@
 .vs
 *.user
 /playground/API/Ecommerce.db-*
+/playground/API/wwwroot
 *.bk.*
 /playground/API/local.settings.json
-/playground/API/wwwroot
