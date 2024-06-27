@@ -4,7 +4,7 @@ namespace Infrastructure.Data.Specifications;
 
 public class ProductWithTypesAndBrandSpecification : BaseSpecification<Product>
 {
-    public ProductWithTypesAndBrandSpecification(string sort, int? productTypeId, int? productBrandId, int skip, int take, string search)
+    public ProductWithTypesAndBrandSpecification(string sort, int? productTypeId, int[]? productBrandIds, int skip, int take, string search)
     {
         AddInclude(p => p.ProductType);
         AddInclude(p => p.ProductBrand);
@@ -33,11 +33,11 @@ public class ProductWithTypesAndBrandSpecification : BaseSpecification<Product>
         }
 
         // Apply filtering based on product type And product brand
-        if (productBrandId.HasValue || productTypeId.HasValue)
+        if (productBrandIds != null || productTypeId.HasValue)
         {
             // Combine the conditions using And operator
             ApplyCriteria(p =>
-                (!productBrandId.HasValue || p.ProductBrandId == productBrandId.Value) &&
+                (productBrandIds == null || productBrandIds!.Contains(p.ProductBrandId)) &&
                 (!productTypeId.HasValue || p.ProductTypeId == productTypeId.Value));
         }
 

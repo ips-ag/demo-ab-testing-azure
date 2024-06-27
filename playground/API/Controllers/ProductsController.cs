@@ -25,13 +25,13 @@ namespace API.Controllers
             // Extract the parameters from the productParams object
             var sort = productParams.Sort;
             var productTypeId = productParams.ProductTypeId;
-            var productBrandId = productParams.ProductBrandId;
+            var productBrandIds = productParams.ProductBrandIds;
             var skip = (productParams.PageIndex - 1) * productParams.PageSize; // Calculate skip based on PageIndex and PageSize
             var take = productParams.PageSize; // Use PageSize for take
             var search = productParams.Search;
 
             // Create a specification for counting products
-            var countSpec = new ProductCountSpecification(productBrandId, productTypeId, search);
+            var countSpec = new ProductCountSpecification(productBrandIds, productTypeId, search);
 
             // Use the specification with the repository to get the total count of products
             var totalCount = await productRepository.CountAsync(countSpec);
@@ -43,7 +43,7 @@ namespace API.Controllers
             }
 
             // Create a specification for fetching paginated products
-            var spec = new ProductWithTypesAndBrandSpecification(sort, productTypeId, productBrandId, skip, take, search);
+            var spec = new ProductWithTypesAndBrandSpecification(sort, productTypeId, productBrandIds, skip, take, search);
 
             // Use the specification with the repository to get filtered and included results
             var products = await productRepository.ListAsync(spec);

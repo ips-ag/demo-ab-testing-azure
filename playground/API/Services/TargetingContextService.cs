@@ -10,7 +10,7 @@ public class TargetingContextService(IHttpContextAccessor contextAccessor) : ITa
     {
         HttpContext httpContext = contextAccessor.HttpContext!;
         var user = httpContext.User;
-        if (user.Identity == null || user.Identity.IsAuthenticated)
+        if (user.Identity == null || !user.Identity.IsAuthenticated)
         {
             return new()
             {
