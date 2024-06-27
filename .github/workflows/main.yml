@@ -1,5 +1,5 @@
 # The name of the deployment
-name: Trigger auto deployment for containerapps
+name: Build & deploy containerapps
 
 # When this action will be executed
 on:
@@ -9,6 +9,8 @@ on:
     branches:
     - main
     - feature/*
+    paths:
+      - playground/**
 
   # Allow manually trigger of the jobs
   workflow_dispatch:      
