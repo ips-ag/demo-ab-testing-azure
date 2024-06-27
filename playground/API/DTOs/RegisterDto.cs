@@ -21,7 +21,7 @@ public class RegisterDto
 
     [Required(ErrorMessage = "Display Name is required")]
     public string DisplayName { get; set; }
-    [MaxLength(10)]
+    [MaxLength(100)]
     public string SoftwareDistributionGroup { get; set; }
 }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
