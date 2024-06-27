@@ -8,6 +8,9 @@ on:
       - feature/*
     paths:
       - playground/Nuget/**
+    
+  # Allow manually trigger of the jobs
+  workflow_dispatch:
 
 env:
   projectName: Ips.AbTesting
