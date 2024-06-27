@@ -1,0 +1,19 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=Ecommerce.db",
+    "IdentityConnection": "Data Source=Identity.db",
+    "AppConfig": "Endpoint=https://abtesting-app-configs.azconfig.io;Id=kRh1;Secret=9GyWmLpupq5mjRAN4Yo5X67EziHJonC0Vi6MZW6DYNDSzUQi5AkJJQQJ99AFAC5RqLJv5RasAAABAZACvu46",
+    "AppInsights": "InstrumentationKey=8b588b1c-a11c-47f1-a6a2-4d5a7c2a3d1b;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/;ApplicationId=e617ddcc-582a-487c-94f2-346e1f4ad84d"
+  },
+  "TokenSettings": {
+    "Key": "1YvFvFn3x7eJ0jyRzpSDbGOTze7FbLPhR4lFslfZXG6tG5r7tnMyLrVNlJIswLWS",
+    "Issuer": "http://localhost:5103/",
+    "Audience": "API"
+  }
+}
