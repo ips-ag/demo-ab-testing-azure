@@ -6,18 +6,26 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 import { StoreRoutingModule } from './store-routing.module';
+import { ProductBrandFilterComponent } from './product-brand-filter/product-brand-filter.component';
+import { ProductBrandFilterV0Component } from './product-brand-filter/product-brand-filter-v0/product-brand-filter-v0.component';
+import { ProductBrandFilterV1Component } from './product-brand-filter/product-brand-filter-v1/product-brand-filter-v1.component';
+import { AnalyticsModule } from '../analytics/analytics.module';
 
 @NgModule({
   declarations: [
     StoreComponent,
     ProductItemComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    ProductBrandFilterComponent,
+    ProductBrandFilterV0Component,
+    ProductBrandFilterV1Component,
   ],
   imports: [
     CommonModule,
     StoreRoutingModule,
     FormsModule,
-    SharedModule
-  ]
+    SharedModule,
+    AnalyticsModule,
+  ],
 })
-export class StoreModule { }
+export class StoreModule {}
