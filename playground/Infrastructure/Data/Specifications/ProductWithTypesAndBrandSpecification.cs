@@ -1,9 +1,10 @@
 using Core.Entities;
-using Infrastructure.Data.Specifications;
+
+namespace Infrastructure.Data.Specifications;
 
 public class ProductWithTypesAndBrandSpecification : BaseSpecification<Product>
 {
-    public ProductWithTypesAndBrandSpecification(string sort, int? productTypeId, int? productBrandId, int skip, int take, string search)
+    public ProductWithTypesAndBrandSpecification(string sort, int? productTypeId, int[]? productBrandIds, int skip, int take, string search)
     {
         AddInclude(p => p.ProductType);
         AddInclude(p => p.ProductBrand);
@@ -32,11 +33,11 @@ public class ProductWithTypesAndBrandSpecification : BaseSpecification<Product>
         }
 
         // Apply filtering based on product type And product brand
-        if (productBrandId.HasValue || productTypeId.HasValue)
+        if (productBrandIds != null || productTypeId.HasValue)
         {
             // Combine the conditions using And operator
             ApplyCriteria(p =>
-                (!productBrandId.HasValue || p.ProductBrandId == productBrandId.Value) &&
+                (productBrandIds == null || productBrandIds!.Contains(p.ProductBrandId)) &&
                 (!productTypeId.HasValue || p.ProductTypeId == productTypeId.Value));
         }
 
@@ -49,11 +50,11 @@ public class ProductWithTypesAndBrandSpecification : BaseSpecification<Product>
         // Apply search criteria
         if (!string.IsNullOrEmpty(search))
         {
-            ApplyCriteria(p => p.Name.ToLower().Contains(search.ToLower()));
+            ApplyCriteria(p => p.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 
-    public ProductWithTypesAndBrandSpecification(int id) : base(product=>product.Id==id)
+    public ProductWithTypesAndBrandSpecification(int id) : base(product => product.Id == id)
     {
         AddInclude(p => p.ProductType);
         AddInclude(p => p.ProductBrand);

@@ -1,0 +1,33 @@
+name: Publish Nuget Pre-release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+-preview[0-9][0-9][0-9]"
+    branches:
+      - feature/*
+    paths:
+      - playground/Nuget/**
+    
+  # Allow manually trigger of the jobs
+  workflow_dispatch:
+
+env:
+  projectName: Ips.AbTesting
+  projectPath: Nuget/Ips.AbTesting
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set VERSION variable from tag
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Pack ${{ env.projectName }}.${VERSION}
+        run: dotnet pack ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration Release /p:Version=${VERSION} --output .
+      - name: Push ${{ env.projectName }}.${VERSION}.nupkg
+        run: dotnet nuget push ${{ env.projectName }}.${VERSION}.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}

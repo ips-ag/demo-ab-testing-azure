@@ -1,5 +1,5 @@
 ﻿# Base image for ASP.NET Core runtime
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -15,7 +15,7 @@ ENV ANALYTICS_GA_MEASUREMENT_ID=${ANALYTICS_GA_MEASUREMENT_ID}
 RUN npm run build
 
 # Restore dependencies for the .NET project
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS restore
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS restore
 WORKDIR /src/Ecommerce
 COPY API/API.csproj API/
 COPY Core/Core.csproj Core/
@@ -23,7 +23,7 @@ COPY Infrastructure/Infrastructure.csproj Infrastructure/
 RUN dotnet restore API/API.csproj
 
 # Build the .NET project
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src/Ecommerce
 COPY . .  
 # Copy all files

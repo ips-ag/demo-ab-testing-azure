@@ -1,34 +1,26 @@
-using API.Contexts;
+using API.Services;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Identity;
 using Infrastructure.Services;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-using Microsoft.ApplicationInsights.Extensibility;
+using Ips.AbTesting.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.FeatureManagement;
-using Microsoft.FeatureManagement.Telemetry;
-using Microsoft.FeatureManagement.Telemetry.ApplicationInsights.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.AddAzureAppConfiguration(options =>
-    options.Connect(builder.Configuration.GetConnectionString("AppConfig"))
-    .UseFeatureFlags(ffo =>
-    {
-        ffo.CacheExpirationInterval = TimeSpan.FromSeconds(5);
-        //ffo.Label = "dev";
-    }));
+builder.Configuration.AddJsonFile("local.settings.json", optional: true);
+builder.AddAbTesting<TargetingContextService>(builder.Configuration.GetConnectionString("AppConfig")!,
+                                              builder.Configuration.GetConnectionString("AppInsights")!);
 //
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddAbTestingControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,19 +32,6 @@ builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
-//
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddAzureAppConfiguration()
-    .AddFeatureManagement()
-    .WithTargeting<TargetingContextAccessor>()
-    .AddTelemetryPublisher<ApplicationInsightsTelemetryPublisher>();
-builder.Services.AddApplicationInsightsTelemetry(
-    new ApplicationInsightsServiceOptions
-    {
-        ConnectionString = builder.Configuration.GetConnectionString("AppInsights"),
-        EnableAdaptiveSampling = false
-    })
-    .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
 //
 builder.Services.AddDistributedMemoryCache();
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
@@ -76,7 +55,7 @@ builder.Services.AddCors(options =>
     });
 });
 // Configure authentication and authorization middleware
-var tokenSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>();
+var tokenSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>()!;
 var fileProvider = "appsettings.json";
 var fileInfo = builder.Environment.ContentRootFileProvider.GetFileInfo(fileProvider);
 Console.WriteLine("Using appsettings.json file at: " + fileInfo.PhysicalPath);
@@ -107,8 +86,7 @@ app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseAzureAppConfiguration();
-app.UseMiddleware<TargetingHttpContextMiddleware>();
+app.UseAbTesting();
 //
 app.MapControllers();
 app.Use(async (context, next) =>
@@ -116,6 +94,7 @@ app.Use(async (context, next) =>
     await next();
     if (context.Response.StatusCode == (int)HttpStatusCode.NotFound
         && !Path.HasExtension(context.Request.Path.Value)
+        && context.Request.Path.Value != null
         && !context.Request.Path.Value.StartsWith("/api"))
     {
         context.Request.Path = "/index.html";
@@ -123,7 +102,7 @@ app.Use(async (context, next) =>
         await next();
     }
 });
-app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } });
+app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = ["index.html"] });
 app.UseStaticFiles(new StaticFileOptions
 {
     ServeUnknownFileTypes = true,
