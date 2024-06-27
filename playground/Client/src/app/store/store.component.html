@@ -20,17 +20,12 @@
       </select>
 
       <h5 class="text-primary ml-3 mt-4 mb-3">Brands</h5>
-      <ul class="list-group my-3">
-        <li
-          class="list-group-item"
-          *ngFor="let brand of brands; let i = index"
-          [class.active]="brand.id === params.productBrandId"
-          [value]="brand.id"
-          (click)="selectBrand(brand.id)"
-        >
-          {{ brand.name }}
-        </li>
-      </ul>
+      <app-product-brand-filter
+        [brands]="brands"
+        [params]="params"
+        (brandSelected)="selectBrand($event)"
+      >
+      </app-product-brand-filter>
       <h5 class="text-primary ml-3">Types</h5>
       <ul class="list-group my-3">
         <li

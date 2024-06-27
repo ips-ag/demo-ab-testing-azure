@@ -7,12 +7,16 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
+import { SettingsModule } from '../settings/settings.module';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { DynamicComponentLoaderDirective } from './directives/dynamic-component-loader.directive';
 
 @NgModule({
   declarations: [
     PaginationHeaderComponent,
     PaginationComponent,
-    OrderTotalsComponent
+    OrderTotalsComponent,
+    DynamicComponentLoaderDirective,
   ],
   imports: [
     CommonModule,
@@ -20,9 +24,10 @@ import { OrderTotalsComponent } from './order-totals/order-totals.component';
     ReactiveFormsModule,
     CarouselModule.forRoot(),
     PaginationModule.forRoot(),
-    MatInputModule
+    MatInputModule,
+    SettingsModule,
   ],
-  exports:[
+  exports: [
     PaginationHeaderComponent,
     PaginationComponent,
     OrderTotalsComponent,
@@ -30,7 +35,10 @@ import { OrderTotalsComponent } from './order-totals/order-totals.component';
     CarouselModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule
-  ]
+    MatInputModule,
+    SettingsModule,
+    NgxSliderModule,
+    DynamicComponentLoaderDirective,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

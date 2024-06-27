@@ -14,8 +14,15 @@ export class GoogleAnalyticsService extends BaseService {
   gtag('config', '${this.gtagId}');`;
   private gtagSrc =
     'https://www.googletagmanager.com/gtag/js?id=' + this.gtagId;
+  private gtag = (window as typeof window & { gtag: any }).gtag;
   init() {
     this.addScriptToHead(this.gtagSrc);
     this.addScriptToHead(undefined, this.gtagContent);
+  }
+  triggerEvent(eventName: string, eventCategory: string, eventLabel: string) {
+    this.gtag('event', eventName, {
+      event_category: eventCategory,
+      event_label: eventLabel,
+    });
   }
 }
