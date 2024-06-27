@@ -59,6 +59,7 @@ namespace API.Controllers
                     new(ClaimTypes.NameIdentifier, user!.Id),
                     new(ClaimTypes.Name, user!.DisplayName),
                     new(ClaimTypes.Email, user!.Email!),
+                    new(ClaimTypes.GroupSid, user!.SoftwareDistributionGroup ?? "Stable"),
                     // Add more claims as needed
                 };
 

@@ -1,3 +1,4 @@
+using API.Services;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -14,7 +15,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("local.settings.json", optional: true);
-builder.AddAbTesting();
+builder.AddAbTesting<TargetingContextService>(builder.Configuration.GetConnectionString("AppConfig")!,
+                                              builder.Configuration.GetConnectionString("AppInsights")!);
 //
 // Add services to the container.
 builder.Services.AddControllers()

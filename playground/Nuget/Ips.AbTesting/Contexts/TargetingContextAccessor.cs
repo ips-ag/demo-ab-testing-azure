@@ -1,32 +1,23 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Ips.AbTesting.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.FeatureManagement.FeatureFilters;
 
 namespace Ips.AbTesting.Contexts;
 
-internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor) : ITargetingContextAccessor
+internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor,
+                                        ITargetingContextService distributionService) : ITargetingContextAccessor
 {
-    private const string TargetingContextLookup = "TargetingContextAccessor.TargetingContext";
+    private const string TargetingContextLookup = $"{nameof(TargetingContextAccessor)}.{nameof(TargetingContext)}";
 
-    public ValueTask<TargetingContext> GetContextAsync()
+    public async ValueTask<TargetingContext> GetContextAsync()
     {
         HttpContext httpContext = httpContextAccessor.HttpContext!;
         if (httpContext.Items.TryGetValue(TargetingContextLookup, out var value))
         {
-            return new ValueTask<TargetingContext>((TargetingContext)value!);
+            return (TargetingContext)value!;
         }
-        List<string> groups = [];
-        if (httpContext.User?.Identity?.Name != null)
-        {
-            groups.Add(httpContext.User.Identity.Name.Split("@", StringSplitOptions.None)[1]);
-        }
-        TargetingContext targetingContext = new()
-        {
-            //UserId = httpContext.User.Identity.Name ?? "guest",
-            // TODO
-            UserId = Guid.NewGuid().ToString(),
-            Groups = groups
-        };
+        var targetingContext = await distributionService.GetTargetingContextAsync(httpContext.RequestAborted).ConfigureAwait(false);
         httpContext.Items[TargetingContextLookup] = targetingContext;
-        return new ValueTask<TargetingContext>(targetingContext);
+        return targetingContext;
     }
 }

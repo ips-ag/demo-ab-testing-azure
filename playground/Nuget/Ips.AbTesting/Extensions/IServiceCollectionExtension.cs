@@ -15,10 +15,13 @@ namespace Ips.AbTesting.Extensions;
 
 public static class IServiceCollectionExtension
 {
-    public static void AddAbTesting(this IHostApplicationBuilder builder, string? appConfigConnectionString = null, string? appInsightsConnectionString = null)
+    public static void AddAbTesting<TTargetingContextService>(this IHostApplicationBuilder builder,
+                                                              string appConfigConnectionString,
+                                                              string appInsightsConnectionString)
+        where TTargetingContextService : class, ITargetingContextService
     {
         builder.Configuration.AddAzureAppConfiguration(options
-            => options.Connect(appConfigConnectionString ?? builder.Configuration.GetConnectionString("AppConfig"))
+            => options.Connect(appConfigConnectionString)
             .UseFeatureFlags(ffo =>
             {
                 ffo.CacheExpirationInterval = TimeSpan.FromSeconds(5);
@@ -32,13 +35,14 @@ public static class IServiceCollectionExtension
         builder.Services.AddApplicationInsightsTelemetry(
             new ApplicationInsightsServiceOptions
             {
-                ConnectionString = appInsightsConnectionString ?? builder.Configuration.GetConnectionString("AppInsights"),
+                ConnectionString = appInsightsConnectionString,
                 EnableAdaptiveSampling = false
             })
             .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
         //
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+        builder.Services.AddSingleton<ITargetingContextService, TTargetingContextService>();
     }
 
     public static void UseAbTesting(this IApplicationBuilder app)
