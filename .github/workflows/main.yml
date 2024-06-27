@@ -9,6 +9,8 @@ on:
     branches:
     - main
     - feature/*
+    paths:
+      - playground/**
 
   # Allow manually trigger of the jobs
   workflow_dispatch:      
