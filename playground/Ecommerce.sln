@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Nuget", "0 - Nuget", "{E1111255-AF2A-4691-BE86-F5F57351A538}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ips.AbTesting", "..\nuget\Ips.AbTesting\Ips.AbTesting.csproj", "{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ips.AbTesting", "Nuget\Ips.AbTesting\Ips.AbTesting.csproj", "{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -16,6 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Infrastructure/Infrastructure.csproj" />
-    <ProjectReference Include="..\..\nuget\Ips.AbTesting\Ips.AbTesting.csproj" />
+    <ProjectReference Include="../Nuget/Ips.AbTesting/Ips.AbTesting.csproj" />
   </ItemGroup>
 </Project>
