@@ -1,5 +1,5 @@
 # The name of the deployment
-name: Build & deploy containerapps
+name: Build & deploy to Azure Container App
 
 # When this action will be executed
 on:
@@ -11,6 +11,7 @@ on:
     - feature/*
     paths:
       - playground/**
+      - '!playground/Nuget/**'
 
   # Allow manually trigger of the jobs
   workflow_dispatch:      
