@@ -21,34 +21,55 @@ namespace Infrastructure.Identity
         {
             if (!userManager.Users.Any())
             {
-                var user = new ApplicationUser
-                {
-                    UserName = "rahul@sahay.com",
-                    Email = "rahul@sahay.com",
-                    DisplayName = "Rahul Sahay",
-                    // Add other properties as needed
+                var users = new List<ApplicationUser>
+            {
+                new() {
+                    UserName = "uyen.dinhluu@ips-ag.com",
+                    Email = "uyen.dinhluu@ips-ag.com",
+                    DisplayName = "Uyen Luu",
+                    SoftwareDistributionGroup = "Stable",
                     Address = new Address
                     {
-                        Id = Guid.NewGuid().ToString(), 
-                        Fname = "Rahul",
-                        Lname = "Sahay",
-                        Street = "123 Bariyatu",
-                        City = "Ranchi",
+                        Id = Guid.NewGuid().ToString(),
+                        Fname = "Uyen",
+                        Lname = "Luu",
+                        Street = "11 Le Dinh Ly",
+                        City = "Danang",
                         State = "Jharkhand",
                         ZipCode = "123456"
                     }
-                };
-
-                var result = await userManager.CreateAsync(user, "Pa$$w0rd@1");
-
-                if (result.Succeeded)
-                {
-                    // Optionally, you can do additional seeding or customization here
-                    // For example, add user roles, claims, etc.
+                },
+                new() {
+                    UserName = "anh.quangtran@ips-ag.com",
+                    Email = "anh.quangtran@ips-ag.com",
+                    DisplayName = "Steve",
+                    SoftwareDistributionGroup = "EarlyAccess",
+                    Address = new Address
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Fname = "Steve",
+                        Lname = "Steve",
+                        Street = "11 Le Dinh Ly",
+                        City = "Danang",
+                        State = "Jharkhand",
+                        ZipCode = "123456"
+                    }
                 }
-                else
+            };
+
+                foreach (var user in users)
                 {
-                    throw new Exception($"User creation failed: {string.Join(", ", result.Errors)}");
+                    var result = await userManager.CreateAsync(user, "1!LeDinhLy");
+
+                    if (result.Succeeded)
+                    {
+                        // Optionally, you can do additional seeding or customization here
+                        // For example, add user roles, claims, etc.
+                    }
+                    else
+                    {
+                        throw new Exception($"User creation failed: {string.Join(", ", result.Errors)}");
+                    }
                 }
             }
         }
