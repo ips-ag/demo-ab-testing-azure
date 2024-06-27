@@ -1,5 +1,5 @@
 # The name of the deployment
-name: Build & deploy containerapps
+name: Build & deploy to Azure Container App
 
 # When this action will be executed
 on:
