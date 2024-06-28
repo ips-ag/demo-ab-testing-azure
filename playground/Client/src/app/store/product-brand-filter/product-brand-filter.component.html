@@ -1,2 +1,6 @@
 <ng-template appDynamicComponentLoader></ng-template>
-<app-feature-rate *ngIf="shouldShowFeedback"></app-feature-rate>
+<app-feature-rate
+  *ngIf="shouldShowFeedback"
+  [feature]="'product-brand-filter'"
+  [version]="showingVersion"
+></app-feature-rate>

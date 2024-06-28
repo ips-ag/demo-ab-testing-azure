@@ -19,11 +19,11 @@ public class TargetingContextService(IHttpContextAccessor contextAccessor) : ITa
             };
         }
 
-        var distributionGroup = user.Claims.Single(c => c.Type == ClaimTypes.GroupSid).Value;
+        var distributionGroup = user.Claims.SingleOrDefault(c => c.Type == ClaimTypes.GroupSid)?.Value;
         return new()
         {
             UserId = user.Identity.Name,
-            Groups = [distributionGroup]
+            Groups = string.IsNullOrEmpty(distributionGroup) ? [] : [distributionGroup]
         };
     }
 }

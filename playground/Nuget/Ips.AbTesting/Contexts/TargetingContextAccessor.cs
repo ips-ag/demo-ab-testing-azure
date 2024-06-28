@@ -17,6 +17,7 @@ internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor
             return (TargetingContext)value!;
         }
         var targetingContext = await distributionService.GetTargetingContextAsync(httpContext.RequestAborted).ConfigureAwait(false);
+        httpContext.Response.Headers.Append($"{nameof(AbTesting)}.{nameof(TargetingContext.Groups)}", string.Join(";", targetingContext.Groups));
         httpContext.Items[TargetingContextLookup] = targetingContext;
         return targetingContext;
     }
