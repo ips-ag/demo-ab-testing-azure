@@ -2,8 +2,6 @@ name: Publish Nuget Pre-release
 
 on:
   push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+-preview[0-9][0-9][0-9]"
     branches:
       - feature/*
     paths:
@@ -15,6 +13,8 @@ on:
 env:
   projectName: Ips.AbTesting
   projectPath: ${{ github.workspace }}/playground/Nuget/Ips.AbTesting
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
   
 jobs:
   build:
@@ -23,11 +23,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set VERSION variable from tag
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
-      - name: Pack ${{ env.projectName }}.${VERSION}
-        run: dotnet pack ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration Release /p:Version=${VERSION} --output .
-      - name: Push ${{ env.projectName }}.${VERSION}.nupkg
-        run: dotnet nuget push ${{ env.projectName }}.${VERSION}.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
+        with:
+          fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
+      - name: Get Build Version
+        run: |
+          Import-Module .\build\GetBuildVersion.psm1
+          Write-Host $Env:GITHUB_REF
+          $version = GetBuildVersion -VersionString $Env:GITHUB_REF
+          echo "BUILD_VERSION=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+        shell: pwsh
+
+      - name: Pack ${{ env.projectName }}.$BUILD_VERSION
+        run: dotnet pack ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration Release /p:Version=$BUILD_VERSION --output .
+      - name: Push ${{ env.projectName }}.$BUILD_VERSION.nupkg
+        run: dotnet nuget push ${{ env.projectName }}.$BUILD_VERSION.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
