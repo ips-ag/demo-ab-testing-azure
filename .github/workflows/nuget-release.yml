@@ -14,7 +14,7 @@ on:
 
 env:
   projectName: Ips.AbTesting
-  projectPath: Nuget/Ips.AbTesting
+  projectPath: ${{ github.workspace }}/playground/Nuget/Ips.AbTesting
   
 jobs:
   build:
