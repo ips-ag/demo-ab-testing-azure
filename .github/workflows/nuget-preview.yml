@@ -37,7 +37,7 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=$BUILD_VERSION
 
-      - name: Push ${{ env.projectName }}.$BUILD_VERSION.nupkg
-        run: dotnet nuget push ${{ env.projectName }}.$BUILD_VERSION.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
+      - name: Push
+        run: dotnet nuget push **\*.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
