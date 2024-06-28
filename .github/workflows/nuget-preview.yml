@@ -1,22 +1,28 @@
 name: Publish Nuget Pre-release
 
 on:
-  release:
-      types: [published]
-  # push:
-  #   branches:
-  #     - feature/*
-  #   paths:
-  #     - playground/Nuget/**
+  push:
+    branches:
+      - feature/*
+    paths:
+      - playground/Nuget/**
     
   # Allow manually trigger of the jobs
   workflow_dispatch:  
+    inputs:
+      dispatch-type:
+        type: choice
+        description: Who to greet
+        options: 
+        - Preview
+        - Release
 
 env:
   projectName: Ips.AbTesting
   projectPath: ${{ github.workspace }}/playground/Nuget/Ips.AbTesting
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
+  NUGET_VERSION: '1.0.0'
   
 jobs:
   build:
@@ -31,17 +37,15 @@ jobs:
           fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
       - name: Set Build Number Environment Variable
         run: |
-          echo "BUILD_NUMBER=$((${{ github.run_number }}+${{ github.run_attempt }}))" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$((${{ github.run_number }}${{ github.run_attempt }}))" >> $GITHUB_ENV
           echo $BUILD_NUMBER
-      # - name: Get Build Version
-      #   run: |
-      #     Import-Module .\modules\GetBuildVersion.psm1
-      #     Write-Host $Env:GITHUB_REF
-      #     $version = GetBuildVersion -VersionString ${{ github.event.inputs.message }}
-      #     echo "BUILD_VERSION=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append          
-        # shell: pwsh
-      - name: Build
-        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ github.event.release.tag_name }}-$BUILD_NUMBER
+      - name: Build & Pack Preview
+        if: ${{ github.event.inputs.dispatch-type != 'Release'}}
+        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER
+
+      - name: Build & Pack Release
+        if: ${{ github.event.inputs.dispatch-type == 'Release'}}
+        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER
 
       - name: Push
         run: dotnet nuget push **\*.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
