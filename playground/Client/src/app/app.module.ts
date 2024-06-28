@@ -12,6 +12,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptor/loading.interceptor';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { StarRatingModule } from 'angular-star-rating';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -23,7 +25,8 @@ import { AnalyticsModule } from './analytics/analytics.module';
     HomeModule,
     NgxSpinnerModule.forRoot({ type: 'square-jelly-box' }),
     AnalyticsModule,
-  ], // Add HttpClientModule to imports
+    StarRatingModule.forRoot(),
+  ],
 
   providers: [
     {
