@@ -21,7 +21,7 @@
 		<PackageReference Include="Microsoft.FeatureManagement.Telemetry.ApplicationInsights.AspNetCore" Version="4.0.0-preview3" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Update="README.md" Pack="true" PackagePath="">
+	  <None Update="README.md" Pack="true" PackagePath=".">
 	  </None>
 	</ItemGroup>
 </Project>
