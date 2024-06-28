@@ -26,8 +26,8 @@ namespace Infrastructure.Identity
                 new() {
                     UserName = "uyen.dinhluu@ips-ag.com",
                     Email = "uyen.dinhluu@ips-ag.com",
-                    DisplayName = "Uyen Luu",
-                    SoftwareDistributionGroup = "Stable",
+                    DisplayName = "Uyen Luu - EarlyAccess",
+                    SoftwareDistributionGroup = "EarlyAccess",
                     Address = new Address
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -42,8 +42,8 @@ namespace Infrastructure.Identity
                 new() {
                     UserName = "anh.quangtran@ips-ag.com",
                     Email = "anh.quangtran@ips-ag.com",
-                    DisplayName = "Steve",
-                    SoftwareDistributionGroup = "EarlyAccess",
+                    DisplayName = "Steve - Stable",
+                    SoftwareDistributionGroup = "Stable",
                     Address = new Address
                     {
                         Id = Guid.NewGuid().ToString(),
