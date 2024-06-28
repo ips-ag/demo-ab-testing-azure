@@ -1,4 +1,4 @@
-name: Publish Nuget Pre-release
+name: Publish Nuget
 
 on:
   push:
