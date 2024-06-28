@@ -13,7 +13,11 @@ export class FeatureRateService extends BaseService {
     this.gaService.triggerEvent(
       'rate_feature',
       feature,
-      `${rating}_${version}`
+      `rate_${rating}_${version}`
     );
+    localStorage.setItem(`rate_${feature}_${version}`, `${rating}`);
+  }
+  isRated(feature: string, version: string) {
+    return localStorage.getItem(`rate_${feature}_${version}`) !== null;
   }
 }

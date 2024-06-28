@@ -25,10 +25,12 @@ export class StoreService {
       .set('take', params.take.toString());
 
     if (!params.productBrandIds?.includes(0)) {
-      httpParams = httpParams.set(
-        'productBrandIds',
-        encodeURIComponent(JSON.stringify(params.productBrandIds ?? []))
-      );
+      params.productBrandIds.map((id) => {
+        httpParams = httpParams.append(
+          'productBrandIds',
+          encodeURIComponent(id)
+        );
+      });
     }
 
     if (params.productTypeId !== 0) {

@@ -17,6 +17,7 @@ import { DynamicComponentLoaderDirective } from 'src/app/shared/directives/dynam
 import { SettingsService } from 'src/app/settings/settings.service';
 import { Observable, Subject, share, startWith, takeUntil } from 'rxjs';
 import { FeatureFlags } from 'src/app/shared/models/featureFlag';
+import { GoogleAnalyticsService } from 'src/app/analytics/services/google-analytics.service';
 
 type ProductBrandFilterVersion =
   keyof typeof PRODUCT_BRAND_FILTER_COMPONENT_MAPS;
@@ -45,7 +46,10 @@ export class ProductBrandFilterComponent
   }
   private featureFlags$: Observable<FeatureFlags>;
   private destroy$ = new Subject<void>();
-  constructor(private settingsService: SettingsService) {
+  constructor(
+    private settingsService: SettingsService,
+    private googleAnalyticsService: GoogleAnalyticsService
+  ) {
     this.featureFlags$ = this.settingsService.getFeatureFlags().pipe(
       takeUntil(this.destroy$),
       startWith({
@@ -102,6 +106,12 @@ export class ProductBrandFilterComponent
       componentRef.instance.brandSelected.subscribe((brandIds: number[]) => {
         this.selectBrand(brandIds);
       });
+    }
+
+    if (this.shouldShowFeedback) {
+      this.googleAnalyticsService.trackBounceRate(
+        'ProductBrandFilter@' + this.showingVersion
+      );
     }
   }
 
