@@ -37,7 +37,7 @@ jobs:
           fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
       - name: Set Build Number Environment Variable
         run: |
-          echo "BUILD_NUMBER=$((${{ github.run_number }}${{ github.run_attempt }}))" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$((${{ github.run_number }}.${{ github.run_attempt }}))" >> $GITHUB_ENV
           echo $BUILD_NUMBER
       - name: Build & Pack Preview
         if: ${{ github.event.inputs.dispatch-type != 'Release'}}
