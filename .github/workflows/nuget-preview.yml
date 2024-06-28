@@ -18,6 +18,8 @@ env:
   
 jobs:
   build:
+    env:
+        BUILD_CONFIG: 'Release'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -34,7 +36,7 @@ jobs:
         shell: pwsh
       - name: Build
         run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=$BUILD_VERSION --no-restore
-        
+
       - name: Push ${{ env.projectName }}.$BUILD_VERSION.nupkg
         run: dotnet nuget push ${{ env.projectName }}.$BUILD_VERSION.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
         env:
