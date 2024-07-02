@@ -1,8 +1,8 @@
-﻿using Ips.AbTesting.Services;
+﻿using IPS.AbTesting.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.FeatureManagement.FeatureFilters;
 
-namespace Ips.AbTesting.Contexts;
+namespace IPS.AbTesting.Contexts;
 
 internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor,
                                         ITargetingContextService distributionService) : ITargetingContextAccessor

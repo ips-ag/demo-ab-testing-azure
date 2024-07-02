@@ -1,6 +1,6 @@
 ﻿using Microsoft.FeatureManagement.FeatureFilters;
 
-namespace Ips.AbTesting.Services;
+namespace IPS.AbTesting.Services;
 
 public interface ITargetingContextService
 {

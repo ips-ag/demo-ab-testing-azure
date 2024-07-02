@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.FeatureManagement;
 
-namespace Ips.AbTesting.Services;
+namespace IPS.AbTesting.Services;
 
 public interface IConfigurationService
 {
