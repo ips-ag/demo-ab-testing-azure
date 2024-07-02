@@ -44,11 +44,12 @@ jobs:
           echo $BUILD_NUMBER
       - name: Build & Pack Preview
         if: ${{ github.event.inputs.dispatch-type != 'Release'}}
-        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER
+        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER --skip-duplicate
+
 
       - name: Build & Pack Release
         if: ${{ github.event.inputs.dispatch-type == 'Release'}}
-        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER
+        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER --skip-duplicate
 
       - name: Push
         run: dotnet nuget push **\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_API_KEY}
