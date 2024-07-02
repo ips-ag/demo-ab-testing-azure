@@ -8,13 +8,14 @@ on:
       - feature/*
     paths:
       - packages/Nuget/**
+      - .github/workflows/nuget.yml
     
   # Allow manually trigger of the jobs
   workflow_dispatch:  
     inputs:
       dispatch-type:
         type: choice
-        description: Who to greet
+        description: Release type
         options: 
         - Preview
         - Release
@@ -50,6 +51,6 @@ jobs:
         run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER
 
       - name: Push
-        run: dotnet nuget push **\*.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
+        run: dotnet nuget push **\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_API_KEY}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY  }}
