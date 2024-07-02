@@ -10,11 +10,11 @@ export class FeatureRateService extends BaseService {
     super();
   }
   rateFeature(rating: number, feature: string, version: string) {
-    this.gaService.triggerEvent(
-      'rate_feature',
-      feature,
-      `rate_${rating}_${version}`
-    );
+    this.gaService.triggerEvent('rate_feature', {
+      feature: feature,
+      rating: rating,
+      version: version,
+    });
     localStorage.setItem(`rate_${feature}_${version}`, `${rating}`);
   }
   isRated(feature: string, version: string) {

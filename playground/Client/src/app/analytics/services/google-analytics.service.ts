@@ -16,35 +16,55 @@ export class GoogleAnalyticsService extends BaseService {
     'https://www.googletagmanager.com/gtag/js?id=' + this.gtagId;
   private gtag = (window as typeof window & { gtag: any }).gtag;
   private engagementTimeout = 30000; // 30 seconds
-  private formatEventLabel(label: string): string {
-    return label
-      .toLowerCase() // Convert to lowercase
-      .replace(/\s+/g, '_') // Replace spaces with underscores
-      .replace(/[^\w.-]+/g, ''); // Allow underscores, hyphens, and periods
+  constructor() {
+    super();
+    this.trackBounceRate = this.trackBounceRate.bind(this);
+    this.trackLogin = this.trackLogin.bind(this);
+    this.triggerEvent = this.triggerEvent.bind(this);
   }
   init() {
     this.addScriptToHead(this.gtagSrc);
     this.addScriptToHead(undefined, this.gtagContent);
   }
-  triggerEvent(eventName: string, eventCategory: string, eventLabel: string) {
-    this.gtag('event', eventName, {
-      event_category: eventCategory,
-      event_label: eventLabel,
-    });
+  ensureGAExists() {
+    if (!this.gtag) {
+      if (!(window as typeof window & { gtag: any }).gtag) {
+        this.init();
+      }
+      this.gtag = (window as typeof window & { gtag: any }).gtag;
+    }
+  }
+  triggerEvent(eventName: string, params: Record<string, any>) {
+    this.gtag('event', eventName, params);
   }
   trackBounceRate(featureName: string) {
     // Wait for 30 seconds before marking the visitor as engaged.
     setTimeout(() => {
       // Check if gtag is available.
-      if (this.gtag) {
-        // Send an event to Google Analytics to indicate the user is engaged with a specific feature.
-        // This can help in adjusting the bounce rate as it indicates the user has interacted with the page.
-        this.gtag('event', 'engagement', {
-          event_category: 'User Engagement',
-          event_label: `Engaged User - ${featureName}`,
-          non_interaction: true, // Set to true to not affect bounce rate.
-        });
-      }
+      this.ensureGAExists();
+      // Send an event to Google Analytics to indicate the user is engaged with a specific feature.
+      // This can help in adjusting the bounce rate as it indicates the user has interacted with the page.
+      this.gtag('event', 'engagement', {
+        event_category: 'User Engagement',
+        event_label: `Engaged User - ${featureName}`,
+        non_interaction: true, // Set to true to not affect bounce rate.
+      });
     }, this.engagementTimeout); // Use the engagementTimeout property
+  }
+  async trackLogin(userId: string) {
+    // Check if gtag is available
+
+    this.ensureGAExists();
+
+    // Generate a hashed version of the real user ID
+    const hashedUserId = await this.calculateSHA256(userId);
+
+    // Send a login event to Google Analytics with the hashed user ID
+    this.gtag('event', 'login', {
+      event_category: 'User Authentication',
+      event_label: 'Login',
+      non_interaction: true, // Set to true to not affect bounce rate
+      user_id: hashedUserId, // Use the hashed version of the user ID
+    });
   }
 }
