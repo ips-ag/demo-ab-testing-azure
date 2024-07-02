@@ -53,25 +53,7 @@ namespace API.Controllers
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
 
-                // Generate a JWT token with user claims
-                var tokenClaims = new List<Claim>
-                {
-                    new(ClaimTypes.NameIdentifier, user!.Id),
-                    new(ClaimTypes.Name, user!.DisplayName),
-                    new(ClaimTypes.Email, user!.Email!),
-                    new(ClaimTypes.GroupSid, user!.SoftwareDistributionGroup ?? "Stable"),
-                    // Add more claims as needed
-                };
-
-                // Generate the JWT token
-                var token = tokenService.GenerateToken(tokenClaims);
-
-                return new UserDto
-                {
-                    Email = user.Email!,
-                    Token = token,
-                    DisplayName = user.DisplayName
-                };
+                return CreateUserDto(user!);
             }
 
             if (result.RequiresTwoFactor)
@@ -96,24 +78,7 @@ namespace API.Controllers
                 return NotFound(new { Message = "User not found" });
             }
 
-            // Generate a JWT token with user claims
-            var tokenClaims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.Id),
-                new(ClaimTypes.Name, user.DisplayName),
-                new(ClaimTypes.Email, user.Email!),
-                // Add more claims as needed
-            };
-
-            // Generate the JWT token
-            var token = tokenService.GenerateToken(tokenClaims);
-
-            var userDto = new UserDto
-            {
-                Email = user.Email!,
-                DisplayName = user.DisplayName,
-                Token = token // Set the Token property with the generated token
-            };
+            var userDto = CreateUserDto(user);
 
             return Ok(userDto);
         }
@@ -188,5 +153,32 @@ namespace API.Controllers
 
             return Ok(new { Message = "User address updated successfully" });
         }
+
+        #region Privates
+
+        private UserDto CreateUserDto(ApplicationUser user)
+        {
+            // Generate a JWT token with user claims
+            var tokenClaims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Name, user.DisplayName),
+                new(ClaimTypes.Email, user.Email!),
+                new(ClaimTypes.GroupSid, user!.SoftwareDistributionGroup ?? "Stable"),
+                // Add more claims as needed
+            };
+
+            // Generate the JWT token
+            var token = tokenService.GenerateToken(tokenClaims);
+
+            return new UserDto
+            {
+                Email = user.Email!,
+                DisplayName = user.DisplayName,
+                Token = token // Set the Token property with the generated token
+            };
+        }
+
+        #endregion
     }
 }
