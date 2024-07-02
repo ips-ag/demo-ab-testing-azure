@@ -24,10 +24,9 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (error instanceof HttpErrorResponse) {
           if (error.status === 404) {
             // Handle 404 (Not Found) error
-            console.log('in-here')
+            console.log('in-here');
             this.toastr.error('Page not found!', 'Error'); // Display error message using Toastr
             this.router.navigate(['/not-found']);
-            
           } else if (error.status === 500) {
             // Handle 500 (Server Error) error
             this.router.navigate(['/server-error']);
@@ -36,6 +35,8 @@ export class ErrorInterceptor implements HttpInterceptor {
             // Handle connection refused or no network error
             this.router.navigate(['/connection-error']);
             this.toastr.error('Connection error!', 'Error'); // Display error message using Toastr
+          } else if (error.status === 400 && !!error.error?.message) {
+            this.toastr.error(error.error?.message, 'Error'); // Display error message using Toastr
           }
         }
         // Pass the error along to the next error handling middleware
