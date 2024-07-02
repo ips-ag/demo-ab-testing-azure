@@ -7,7 +7,7 @@ on:
     branches:
       - feature/*
     paths:
-      - packages/Nuget/**
+      - packages/Nuget/IPS.AbTesting/**
       - .github/workflows/nuget.yml
     
   # Allow manually trigger of the jobs
@@ -22,7 +22,7 @@ on:
 
 env:
   projectName: IPS.AbTesting
-  projectPath: ${{ github.workspace }}/packages/Nuget/Ips.AbTesting
+  projectPath: ${{ github.workspace }}/packages/Nuget/IPS.AbTesting
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
   NUGET_VERSION: '1.0.0'
