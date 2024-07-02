@@ -5,7 +5,7 @@ using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Identity;
 using Infrastructure.Services;
-using Ips.AbTesting.Extensions;
+using IPSAG.AbTesting.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
