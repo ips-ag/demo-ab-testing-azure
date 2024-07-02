@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{E76DBDF2-5F06-41B7-9857-492125E8766A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Nuget", "0 - Nuget", "{E1111255-AF2A-4691-BE86-F5F57351A538}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ips.AbTesting", "Nuget\Ips.AbTesting\Ips.AbTesting.csproj", "{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,16 +27,9 @@ Global
 		{E76DBDF2-5F06-41B7-9857-492125E8766A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E76DBDF2-5F06-41B7-9857-492125E8766A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E76DBDF2-5F06-41B7-9857-492125E8766A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{D4B1D4CA-8DA4-42B5-AFA8-F7AF81B6E676} = {E1111255-AF2A-4691-BE86-F5F57351A538}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0FE1BF0E-76FA-417B-9D1C-4F0A2E73C820}

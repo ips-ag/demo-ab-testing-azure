@@ -1,7 +1,9 @@
 name: Publish Nuget
 
 on:
-  push:
+  release:
+    types: [published]
+  push:    
     branches:
       - feature/*
     paths:
@@ -19,7 +21,7 @@ on:
 
 env:
   projectName: Ips.AbTesting
-  projectPath: ${{ github.workspace }}/playground/Nuget/Ips.AbTesting
+  projectPath: ${{ github.workspace }}/packages/Nuget/Ips.AbTesting
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
   NUGET_VERSION: '1.0.0'
