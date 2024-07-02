@@ -7,8 +7,9 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { GoogleAnalyticsService } from '../analytics/services/google-analytics.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,11 @@ export class AccountService {
   private userSource = new BehaviorSubject<User | null>(null);
   userSource$ = this.userSource.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private gaService: GoogleAnalyticsService
+  ) {}
 
   isAuthenticated(): boolean {
     // For example, check if there's a valid JWT token in local storage
@@ -51,6 +56,11 @@ export class AccountService {
   // Method for user login
   login(loginModel: any): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/login`, loginModel).pipe(
+      tap(async (response) => {
+        localStorage.setItem('token', response.token);
+        this.userSource.next(response);
+        await this.gaService.trackLogin(response.email);
+      }),
       // Store token in localStorage and notify via userSource
       map((response) => {
         const user: User = {
@@ -58,9 +68,6 @@ export class AccountService {
           email: response.email,
           token: response.token,
         };
-        localStorage.setItem('token', response.token);
-        this.userSource.next(user);
-
         return user;
       })
     );
