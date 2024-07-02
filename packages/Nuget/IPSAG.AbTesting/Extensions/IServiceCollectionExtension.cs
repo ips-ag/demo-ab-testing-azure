@@ -1,5 +1,5 @@
-﻿using IPS.AbTesting.Contexts;
-using IPS.AbTesting.Services;
+﻿using IPSAG.AbTesting.Contexts;
+using IPSAG.AbTesting.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +11,7 @@ using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Telemetry;
 using Microsoft.FeatureManagement.Telemetry.ApplicationInsights.AspNetCore;
 
-namespace IPS.AbTesting.Extensions;
+namespace IPSAG.AbTesting.Extensions;
 
 public static class IServiceCollectionExtension
 {

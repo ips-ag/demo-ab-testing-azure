@@ -1,7 +1,7 @@
-﻿using IPS.AbTesting.Services;
+﻿using IPSAG.AbTesting.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IPS.AbTesting.Controllers;
+namespace IPSAG.AbTesting.Controllers;
 
 [Route("api/ab-testing")]
 [ApiController]
