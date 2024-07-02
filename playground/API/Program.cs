@@ -107,7 +107,7 @@ app.UseStaticFiles(new StaticFileOptions
 {
     ServeUnknownFileTypes = true,
 });
-
+//
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var context = services.GetRequiredService<EcommerceContext>();
