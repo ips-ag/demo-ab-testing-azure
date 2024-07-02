@@ -20,8 +20,6 @@ WORKDIR /src/Ecommerce
 COPY API/API.csproj API/
 COPY Core/Core.csproj Core/
 COPY Infrastructure/Infrastructure.csproj Infrastructure/
-ARG FEED_ACCESSTOKEN
-ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS="{\"endpointCredentials\": [{\"endpoint\":\"https://nuget.pkg.github.com/ips-ag/index.json\", \"username\":\"ips-ag\", \"password\":\"${FEED_ACCESSTOKEN}\"}]}"
 RUN dotnet restore API/API.csproj
 
 # Build the .NET project
