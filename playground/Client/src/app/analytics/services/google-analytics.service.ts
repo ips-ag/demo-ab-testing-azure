@@ -26,11 +26,8 @@ export class GoogleAnalyticsService extends BaseService {
     this.addScriptToHead(this.gtagSrc);
     this.addScriptToHead(undefined, this.gtagContent);
   }
-  triggerEvent(eventName: string, eventCategory: string, eventLabel: string) {
-    this.gtag('event', eventName, {
-      event_category: eventCategory,
-      event_label: eventLabel,
-    });
+  triggerEvent(eventName: string, params: Record<string, any>) {
+    this.gtag('event', eventName, params);
   }
   trackBounceRate(featureName: string) {
     // Wait for 30 seconds before marking the visitor as engaged.
