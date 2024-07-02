@@ -7,7 +7,7 @@ on:
     branches:
       - feature/*
     paths:
-      - playground/Nuget/**
+      - packages/Nuget/**
     
   # Allow manually trigger of the jobs
   workflow_dispatch:  
