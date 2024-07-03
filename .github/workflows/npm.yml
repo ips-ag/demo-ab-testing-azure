@@ -48,7 +48,7 @@ jobs:
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Ignored due to missing files 📦
+      - name: Ignored due to missing files
         if: ${{ hashFiles(env.WORKING_DIRECTORY && '/package.json') == '' }}
         run: |
           echo "Ignored"
