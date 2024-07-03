@@ -1,25 +1,28 @@
-name: Publish Nuget
+name: Publish to Nuget
 
 on:
-  push:
+  release:
+    types: [published]
+  push:    
     branches:
       - feature/*
     paths:
-      - playground/Nuget/**
+      - packages/Nuget/IPSAG.AbTesting/**
+      - .github/workflows/nuget.yml
     
   # Allow manually trigger of the jobs
   workflow_dispatch:  
     inputs:
       dispatch-type:
         type: choice
-        description: Who to greet
+        description: Release type
         options: 
         - Preview
         - Release
 
 env:
-  projectName: Ips.AbTesting
-  projectPath: ${{ github.workspace }}/playground/Nuget/Ips.AbTesting
+  projectName: IPSAG.AbTesting
+  projectPath: ${{ github.workspace }}/packages/Nuget/IPSAG.AbTesting
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
   NUGET_VERSION: '1.0.0'
@@ -45,9 +48,9 @@ jobs:
 
       - name: Build & Pack Release
         if: ${{ github.event.inputs.dispatch-type == 'Release'}}
-        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER
+        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}
 
       - name: Push
-        run: dotnet nuget push **\*.nupkg --source https://nuget.pkg.github.com/ips-ag/index.json --api-key ${GITHUB_TOKEN}
+        run: dotnet nuget push **\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_API_KEY}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY  }}

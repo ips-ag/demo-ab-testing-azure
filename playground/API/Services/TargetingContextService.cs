@@ -1,4 +1,4 @@
-﻿using Ips.AbTesting.Services;
+﻿using IPSAG.AbTesting.Services;
 using Microsoft.FeatureManagement.FeatureFilters;
 using System.Security.Claims;
 
