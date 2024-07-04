@@ -38,15 +38,13 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install dependencies and build 🔧
+      - name: Install dependencies, build & pack 🔧
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm ci --legacy-peer-deps
-      - name: Build 🔧
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm run build
-      - name: Pack 📦
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm pack --pack-destination="./dist"
+        run: |
+          npm install -g @angular/cli
+          npm ci --legacy-peer-deps
+          npm run build
+          npm pack --pack-destination="./dist"
       - name: Publish package on NPM 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}/dist
         run: npm publish --provenance --access public
