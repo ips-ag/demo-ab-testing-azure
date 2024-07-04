@@ -19,19 +19,19 @@ namespace IPSAG.AbTesting.Extensions;
 public static class IServiceCollectionExtension
 {
     public static void AddAbTesting<TTargetingContextService>(this IHostApplicationBuilder builder,
-                                                              Action<AbTestingConfiguration> configure)
-    where TTargetingContextService : class, ITargetingContextService
-        => builder.AddAbTesting<TTargetingContextService>((o, c) => configure(o));
+                                                                  Action<AbTestingConfiguration> configure)
+        where TTargetingContextService : class, ITargetingContextService
+            => builder.AddAbTesting<TTargetingContextService>((o, c) => configure(o));
 
     public static void AddAbTesting<TTargetingContextService>(this IHostApplicationBuilder builder,
                                                           string appConfigConnectionString,
-                                                          string appInsightsConnectionString)
-    where TTargetingContextService : class, ITargetingContextService
-         => builder.AddAbTesting<TTargetingContextService>((o, c) =>
-         {
-             o.AppConfigConnectionString = appConfigConnectionString;
-             o.AppInsightsConnectionString = appInsightsConnectionString;
-         });
+                                                          string? appInsightsConnectionString = null)
+        where TTargetingContextService : class, ITargetingContextService
+             => builder.AddAbTesting<TTargetingContextService>((o, c) =>
+             {
+                 o.AppConfigConnectionString = appConfigConnectionString;
+                 o.AppInsightsConnectionString = appInsightsConnectionString;
+             });
 
     public static void AddAbTesting<TTargetingContextService>(this IHostApplicationBuilder builder,
                                                               Action<AbTestingConfiguration, IConfiguration> configure,
@@ -46,8 +46,7 @@ public static class IServiceCollectionExtension
         });
         //
         var serviceProvider = services.BuildServiceProvider();
-        var configOptions = serviceProvider.GetOptionsValue<AbTestingConfiguration>(nameof(AbTestingConfiguration.AppConfigConnectionString),
-                                                                       nameof(AbTestingConfiguration.AppInsightsConnectionString));
+        var configOptions = serviceProvider.GetOptionsValue<AbTestingConfiguration>(nameof(AbTestingConfiguration.AppConfigConnectionString));
         builder.Configuration.AddAzureAppConfiguration(options
             => options.Connect(configOptions.AppConfigConnectionString)
             .UseFeatureFlags(ffo =>
@@ -60,13 +59,16 @@ public static class IServiceCollectionExtension
             .AddFeatureManagement()
             .WithTargeting<TargetingContextAccessor>()
             .AddTelemetryPublisher<ApplicationInsightsTelemetryPublisher>();
-        builder.Services.AddApplicationInsightsTelemetry(
-            new ApplicationInsightsServiceOptions
-            {
-                ConnectionString = configOptions.AppInsightsConnectionString,
-                EnableAdaptiveSampling = false
-            })
-            .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
+        if (!string.IsNullOrEmpty(configOptions.AppInsightsConnectionString))
+        {
+            builder.Services.AddApplicationInsightsTelemetry(
+           new ApplicationInsightsServiceOptions
+           {
+               ConnectionString = configOptions.AppInsightsConnectionString,
+               EnableAdaptiveSampling = false
+           })
+           .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
+        }
         //
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
