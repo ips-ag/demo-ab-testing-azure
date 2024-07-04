@@ -22,6 +22,7 @@ on:
 
 env:
   WORKING_DIRECTORY: packages/abtesting
+  PACKAGES_DIRECTORY: packages
 
 jobs:
   build:
@@ -38,11 +39,14 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+      - name: Install @angular/cli
+        working-directory: ${{ env.PACKAGES_DIRECTORY }}
+        run: |
+          npm install -g @angular/cli
+          npm install @angular-devkit/build-angular
       - name: Install dependencies, build & pack 🔧
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          npm install -g @angular/cli@17
-          npm install --save-dev @angular-devkit/build-angular@17
           npm install --legacy-peer-deps
           npm run build
           npm pack --pack-destination="./dist"
