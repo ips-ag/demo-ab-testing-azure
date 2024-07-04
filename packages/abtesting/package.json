@@ -1,5 +1,5 @@
 {
-  "name": "abtesting",
+  "name": "@ips-ag/abtesting",
   "version": "0.0.1",
   "scripts": {
     "build": "ng build"
@@ -13,5 +13,21 @@
     "css-star-rating": "1.3",
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "description": "The A/B Testing NPM is a library designed to facilitate A/B testing experiments in a controlled environment",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ips-ag/demo-ab-testing-azure.git#main"
+  },
+  "keywords": [
+    "abtesting"
+  ],
+  "author": "IPS-AG",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ips-ag/demo-ab-testing-azure/issues"
+  },
+  "homepage": "https://github.com/ips-ag/demo-ab-testing-azure/tree/main#readme"
 }
