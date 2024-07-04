@@ -1,6 +1,6 @@
 {
   "name": "@ips-ag/abtesting",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha",
   "scripts": {
     "build": "ng build"
   },
