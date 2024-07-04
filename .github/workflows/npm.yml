@@ -21,7 +21,7 @@ on:
           - Release
 
 env:
-  WORKING_DIRECTORY: packages/abtesting/dist
+  WORKING_DIRECTORY: packages/abtesting
 
 jobs:
   build:
