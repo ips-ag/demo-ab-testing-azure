@@ -42,7 +42,8 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           npm install -g @angular/cli
-          npm ci --legacy-peer-deps
+          npm install --save-dev @angular-devkit/build-angular
+          npm install --legacy-peer-deps
           npm run build
           npm pack --pack-destination="./dist"
       - name: Publish package on NPM 📦
