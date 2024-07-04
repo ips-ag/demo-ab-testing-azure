@@ -15,12 +15,15 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("local.settings.json", optional: true);
-builder.AddAbTesting<TargetingContextService>(builder.Configuration.GetConnectionString("AppConfig")!,
-                                              builder.Configuration.GetConnectionString("AppInsights")!);
+builder.AddAbTesting<TargetingContextService>(options =>
+{
+    options.AppConfigConnectionString = builder.Configuration.GetConnectionString("AppConfig");
+    options.AppInsightsConnectionString = builder.Configuration.GetConnectionString("AppInsights");
+    options.UseDefaultControllers = true; // default value
+});
 //
 // Add services to the container.
-builder.Services.AddControllers()
-    .AddAbTestingControllers();
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
