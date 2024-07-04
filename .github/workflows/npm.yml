@@ -42,7 +42,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           npm install -g @angular/cli
-          npm install --save-dev @angular-devkit/build-angular
+          npm install --save-dev @angular-devkit/build-angular@17
           npm install --legacy-peer-deps
           npm run build
           npm pack --pack-destination="./dist"
