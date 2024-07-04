@@ -40,7 +40,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies and build 🔧
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: Publish package on NPM 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm publish --provenance --access public
