@@ -58,4 +58,3 @@ jobs:
           buildArguments:
             ANALYTICS_CLARITY_ID=${{ secrets.ANALYTICS_CLARITY_ID }}
             ANALYTICS_GA_MEASUREMENT_ID=${{ secrets.ANALYTICS_GA_MEASUREMENT_ID }}
-            FEED_ACCESSTOKEN=${{ secrets.GITHUB_TOKEN  }}
