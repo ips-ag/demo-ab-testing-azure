@@ -55,19 +55,19 @@ public static class IServiceCollectionExtension
             }));
 
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddAzureAppConfiguration()
+        var featureBuilder = builder.Services.AddAzureAppConfiguration()
             .AddFeatureManagement()
-            .WithTargeting<TargetingContextAccessor>()
-            .AddTelemetryPublisher<ApplicationInsightsTelemetryPublisher>();
+            .WithTargeting<TargetingContextAccessor>();
         if (!string.IsNullOrEmpty(configOptions.AppInsightsConnectionString))
         {
+            featureBuilder.AddTelemetryPublisher<ApplicationInsightsTelemetryPublisher>();
             builder.Services.AddApplicationInsightsTelemetry(
-           new ApplicationInsightsServiceOptions
-           {
-               ConnectionString = configOptions.AppInsightsConnectionString,
-               EnableAdaptiveSampling = false
-           })
-           .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
+            new ApplicationInsightsServiceOptions
+            {
+                ConnectionString = configOptions.AppInsightsConnectionString,
+                EnableAdaptiveSampling = false
+            })
+            .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
         }
         //
         builder.Services.AddDistributedMemoryCache();
