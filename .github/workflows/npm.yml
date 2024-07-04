@@ -43,7 +43,7 @@ jobs:
         run: npm ci --legacy-peer-deps
       - name: Pack 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm pack
+        run: npm pack --pack-destination="./dist"
       - name: Publish package on NPM 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}/dist
         run: npm publish --provenance --access public
