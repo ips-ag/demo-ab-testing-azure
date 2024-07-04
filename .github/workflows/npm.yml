@@ -39,16 +39,10 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies and build 🔧
-        if: ${{ hashFiles(env.WORKING_DIRECTORY && '/package.json') != '' }}
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
       - name: Publish package on NPM 📦
-        if: ${{ hashFiles(env.WORKING_DIRECTORY && '/package.json') != '' }}
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Ignored due to missing files
-        if: ${{ hashFiles(env.WORKING_DIRECTORY && '/package.json') == '' }}
-        run: |
-          echo "Ignored"
