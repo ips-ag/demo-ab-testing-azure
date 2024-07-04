@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies and build 🔧
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --legacy-peer-deps
+      - name: Build 🔧
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run build
       - name: Pack 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm pack --pack-destination="./dist"
