@@ -6,10 +6,10 @@ on:
   # Allow manually trigger of the jobs
   workflow_dispatch:
     inputs:
-      release-type: 
+      release-type:
         type: choice
         description: Release type
-        options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
+        options: [release, beta]
 
 env:
   WORKING_DIRECTORY: packages/npm/abtesting
@@ -19,25 +19,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       # Setup .npmrc file to publish to GitHub Packages
+      - name: Set Build Number Environment Variable
+        run: |
+          echo "BUILD_NUMBER=${{ github.run_number }}.${{ github.run_attempt }}" >> $GITHUB_ENV
+          echo $BUILD_NUMBER
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-          
+
+      - name: Get current version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: echo "CURRENT_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
       # Bump package version
       # Use tag latest
       - name: Bump release version
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.release-type, 'pre') != true
+        if: github.event.inputs.release-type == 'release'
         run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "NEW_VERSION=$(npm --no-git-tag-version version $CURRENT_VERSION)" >> $GITHUB_ENV
           echo "RELEASE_TAG=latest" >> $GITHUB_ENV
         env:
           RELEASE_TYPE: ${{ github.event.inputs.release-type }}
@@ -46,41 +53,23 @@ jobs:
       # Use tag beta for pre-release versions
       - name: Bump pre-release version
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.release-type, 'pre')
+        if: github.event.inputs.release-type != 'release'
         run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "NEW_VERSION=$(npm --no-git-tag-version version ${{env.CURRENT_VERSION}}-beta${{env.BUILD_NUMBER}})" >> $GITHUB_ENV
           echo "RELEASE_TAG=beta" >> $GITHUB_ENV
         env:
           RELEASE_TYPE: ${{ github.event.inputs.release-type }}
 
-      # Bump package pre-release version
-      # Use tag beta for pre-release versions
-      - name: Bump pre-release version from branch trigger
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        if: github.event_name != 'workflow_dispatch'
-        run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
-          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
-        env:
-          RELEASE_TYPE: prepatch
-
-      - name: Commit package.json changes and create tag
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-          git add "package.json"
-          git commit -m "chore: release ${{ env.NEW_VERSION }}"
-          git tag ${{ env.NEW_VERSION }}
-
-      - name: Install @angular/cli
+      - name: Install environment dependencies
         working-directory: ${{ env.PACKAGES_DIRECTORY }}
         run: npm ci
+
       - name: Install package dependencies, build 🔧
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           npm install --legacy-peer-deps
           npm run build
+          
       - name: Create ouput folder
         working-directory: ${{ env.WORKING_DIRECTORY }}/dist
         run: |
@@ -88,15 +77,9 @@ jobs:
       - name: Pack 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}/dist
         run: npm pack --pack-destination="./output"
+        
       - name: Publish package to NPM 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}/dist/output
         run: npm publish *.tgz --provenance --access public --tag ${{ env.RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # Push repository changes
-      - name: Push changes to repository
-        env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git push origin && git push --tags
