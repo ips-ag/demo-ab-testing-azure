@@ -90,9 +90,15 @@ jobs:
         run: |
           npm install --legacy-peer-deps
           npm run build
-          npm pack --pack-destination="./dist"
-      - name: Publish package to NPM 📦
+      - name: Create ouput folder
         working-directory: ${{ env.WORKING_DIRECTORY }}/dist
+        run: |
+          mkdir output
+      - name: Pack 📦
+        working-directory: ${{ env.WORKING_DIRECTORY }}/dist
+        run: npm pack --pack-destination="./output"
+      - name: Publish package to NPM 📦
+        working-directory: ${{ env.WORKING_DIRECTORY }}/dist/output
         run: npm publish *.tgz --provenance --access public --tag ${{ env.RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
