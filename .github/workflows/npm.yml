@@ -13,7 +13,7 @@ on:
   # Allow manually trigger of the jobs
   workflow_dispatch:
     inputs:
-      release-type:
+      release-type: 
         type: choice
         description: Release type
         options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
@@ -41,6 +41,7 @@ jobs:
       # Bump package version
       # Use tag latest
       - name: Bump release version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.release-type, 'pre') != true
         run: |
           echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
@@ -51,6 +52,7 @@ jobs:
       # Bump package pre-release version
       # Use tag beta for pre-release versions
       - name: Bump pre-release version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         if: github.event_name == 'workflow_dispatch' || startsWith(github.event.inputs.release-type, 'pre')
         run: |
           echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
@@ -61,14 +63,16 @@ jobs:
       # Bump package pre-release version
       # Use tag beta for pre-release versions
       - name: Bump pre-release version from branch trigger
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         if: github.event_name != 'workflow_dispatch'
         run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version prepatch)" >> $GITHUB_ENV
+          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
           echo "RELEASE_TAG=beta" >> $GITHUB_ENV
         env:
           RELEASE_TYPE: prepatch
 
       - name: Commit package.json changes and create tag
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           git add "package.json"
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
