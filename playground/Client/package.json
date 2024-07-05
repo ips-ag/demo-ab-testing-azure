@@ -52,6 +52,6 @@
     "typescript": "~5.1.3"
   },
   "workspaces": [
-    "../../packages/*"
+    "../../packages/npm/*"
   ]
 }
