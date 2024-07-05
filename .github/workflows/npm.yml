@@ -13,12 +13,10 @@ on:
   # Allow manually trigger of the jobs
   workflow_dispatch:
     inputs:
-      dispatch-type:
+      release-type:
         type: choice
         description: Release type
-        options:
-          - Preview
-          - Release
+        options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
 
 env:
   WORKING_DIRECTORY: packages/abtesting
@@ -39,19 +37,40 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          
+      # Bump package version
+      # Use tag latest
+      - name: Bump release version
+        if: startsWith(github.event.inputs.release-type, 'pre') != true
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+
+      # Bump package pre-release version
+      # Use tag beta for pre-release versions
+      - name: Bump pre-release version
+        if: github.event_name == 'workflow_dispatch' || startsWith(github.event.inputs.release-type, 'pre')
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE
+          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+
       - name: Install @angular/cli
         working-directory: ${{ env.PACKAGES_DIRECTORY }}
         run: |
           npm install -g @angular/cli
-          npm install @angular-devkit/build-angular
-      - name: Install dependencies, build & pack 🔧
+          npm install --save-dev @angular-devkit/build-angular
+      - name: Install package dependencies, build & pack 🔧
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           npm install --legacy-peer-deps
           npm run build
           npm pack --pack-destination="./dist"
-      - name: Publish package on NPM 📦
+      - name: Publish package to NPM 📦
         working-directory: ${{ env.WORKING_DIRECTORY }}/dist
-        run: npm publish --provenance --access public
+        run: npm publish *.tgz --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
