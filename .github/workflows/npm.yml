@@ -3,13 +3,6 @@ on:
   release:
     types: [published]
 
-  push:
-    branches:
-      - feature/*
-    paths:
-      - packages/abtesting/**
-      - .github/workflows/npm.yml
-
   # Allow manually trigger of the jobs
   workflow_dispatch:
     inputs:
