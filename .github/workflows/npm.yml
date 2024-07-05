@@ -46,7 +46,7 @@ jobs:
       # Use tag beta for pre-release versions
       - name: Bump pre-release version
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        if: github.event_name == 'workflow_dispatch' || startsWith(github.event.inputs.release-type, 'pre')
+        if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.release-type, 'pre')
         run: |
           echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
           echo "RELEASE_TAG=beta" >> $GITHUB_ENV
