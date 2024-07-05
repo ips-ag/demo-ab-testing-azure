@@ -12,8 +12,8 @@ on:
         options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
 
 env:
-  WORKING_DIRECTORY: packages/abtesting
-  PACKAGES_DIRECTORY: packages
+  WORKING_DIRECTORY: packages/npm/abtesting
+  PACKAGES_DIRECTORY: packages/npm
 
 jobs:
   build:
