@@ -3,32 +3,24 @@ on:
   release:
     types: [published]
 
-  push:
-    branches:
-      - feature/*
-    paths:
-      - packages/abtesting/dist/**
-      - .github/workflows/npm.yml
-
   # Allow manually trigger of the jobs
   workflow_dispatch:
     inputs:
-      dispatch-type:
+      release-type: 
         type: choice
         description: Release type
-        options:
-          - Preview
-          - Release
+        options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
 
 env:
-  WORKING_DIRECTORY: packages/abtesting/dist
+  WORKING_DIRECTORY: packages/npm/abtesting
+  PACKAGES_DIRECTORY: packages/npm
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,17 +30,73 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install dependencies and build 🔧
-        if: ${{ hashFiles(env.WORKING_DIRECTORY && '/package.json') != '' }}
+          
+      # Bump package version
+      # Use tag latest
+      - name: Bump release version
         working-directory: ${{ env.WORKING_DIRECTORY }}
+        if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.release-type, 'pre') != true
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+
+      # Bump package pre-release version
+      # Use tag beta for pre-release versions
+      - name: Bump pre-release version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.release-type, 'pre')
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+
+      # Bump package pre-release version
+      # Use tag beta for pre-release versions
+      - name: Bump pre-release version from branch trigger
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
+        env:
+          RELEASE_TYPE: prepatch
+
+      - name: Commit package.json changes and create tag
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git add "package.json"
+          git commit -m "chore: release ${{ env.NEW_VERSION }}"
+          git tag ${{ env.NEW_VERSION }}
+
+      - name: Install @angular/cli
+        working-directory: ${{ env.PACKAGES_DIRECTORY }}
         run: npm ci
-      - name: Publish package on NPM 📦
-        if: ${{ hashFiles(env.WORKING_DIRECTORY && '/package.json') != '' }}
+      - name: Install package dependencies, build 🔧
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm publish --provenance --access public
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
+      - name: Create ouput folder
+        working-directory: ${{ env.WORKING_DIRECTORY }}/dist
+        run: |
+          mkdir output
+      - name: Pack 📦
+        working-directory: ${{ env.WORKING_DIRECTORY }}/dist
+        run: npm pack --pack-destination="./output"
+      - name: Publish package to NPM 📦
+        working-directory: ${{ env.WORKING_DIRECTORY }}/dist/output
+        run: npm publish *.tgz --provenance --access public --tag ${{ env.RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Ignored due to missing files
-        if: ${{ hashFiles(env.WORKING_DIRECTORY && '/package.json') == '' }}
+
+      # Push repository changes
+      - name: Push changes to repository
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Ignored"
+          git push origin && git push --tags

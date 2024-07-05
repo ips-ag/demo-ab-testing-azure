@@ -7,3 +7,6 @@
 /playground/API/wwwroot
 *.bk.*
 /playground/API/local.settings.json
+**/node_modules
+**/.angular
+**/out-tsc
