@@ -1,24 +1,43 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using IPSAG.AbTesting.Monads;
+using IPSAG.AbTesting.ResponseModels;
+using Microsoft.Extensions.Configuration;
 using Microsoft.FeatureManagement;
 
 namespace IPSAG.AbTesting.Services;
 
 public interface IConfigurationService
 {
-    Task<IReadOnlyDictionary<string, string?>> ReadFeatureFlagsAsync(CancellationToken ct = default);
+    Task<Maybe<FeatureFlag[]>> ReadFeatureFlagsAsync(CancellationToken ct = default);
 }
 
 internal class ConfigurationService(IVariantFeatureManagerSnapshot featureManager) : IConfigurationService
 {
-    public async Task<IReadOnlyDictionary<string, string?>> ReadFeatureFlagsAsync(CancellationToken ct = default)
+    public async Task<Maybe<FeatureFlag[]>> ReadFeatureFlagsAsync(CancellationToken ct = default)
     {
-        var featureFlags = new Dictionary<string, string?>();
-        var featureNames = featureManager.GetFeatureNamesAsync(ct).ToBlockingEnumerable(ct);
-        foreach (var featureName in featureNames)
+        try
         {
-            var variant = await featureManager.GetVariantAsync(featureName, ct).ConfigureAwait(false);
-            featureFlags.Add(featureName, variant != null ? variant.Configuration.Get<string?>() : (await featureManager.IsEnabledAsync(featureName, ct)).ToString());
+            var featureNames = featureManager.GetFeatureNamesAsync(ct).ToBlockingEnumerable(ct);
+            var getFlagValues = featureNames.Select(async featureName =>
+            {
+                var variant = await featureManager.GetVariantAsync(featureName, ct).ConfigureAwait(false);
+                if (variant is null)
+                {
+                    var flagValue = await featureManager.IsEnabledAsync(featureName, ct).ConfigureAwait(false);
+                    return FeatureFlag.Create(featureName, flagValue);
+                }
+                else
+                {
+                    var flagValue = variant.Configuration.Get<string?>();
+                    return FeatureFlag.CreateVariant(featureName, flagValue);
+                }
+            });
+
+            var featureFlags = await Task.WhenAll(getFlagValues).ConfigureAwait(false);
+            return Maybe<FeatureFlag[]>.Some(featureFlags);
         }
-        return featureFlags;
+        catch (Exception ex)
+        {
+            return Maybe<FeatureFlag[]>.Error(ex);
+        }
     }
 }

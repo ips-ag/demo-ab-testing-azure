@@ -16,6 +16,9 @@ using static System.ArgumentException;
 
 namespace IPSAG.AbTesting.Extensions;
 
+/// <summary>
+/// 
+/// </summary>
 public static class IServiceCollectionExtension
 {
     public static void AddAbTesting<TTargetingContextService>(this IHostApplicationBuilder builder,
@@ -92,6 +95,13 @@ public static class IServiceCollectionExtension
 
     }
 
+    public static IMvcBuilder ConfigureApiBehavior(this IMvcBuilder builder)
+    {
+        return builder.ConfigureApiBehaviorOptions(options =>
+        {
+            options.SuppressMapClientErrors = true;
+        });
+    }
     #region Internal
 
     internal static TData GetValue<TData>(this IOptions<TData> options, params string[] requiredParams) where TData : class, new()
