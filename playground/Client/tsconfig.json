@@ -19,7 +19,11 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    "paths": {
+      "@ips-ag/abtesting": ["../../packages/npm/abtesting/dist"],
+      "@ips-ag/abtesting/*": ["../../packages/npm/abtesting/dist/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
