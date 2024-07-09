@@ -19,7 +19,7 @@ namespace IPSAG.AbTesting.Extensions;
 /// <summary>
 /// 
 /// </summary>
-public static class IServiceCollectionExtension
+public static class ServiceCollectionExtension
 {
     public static void AddAbTesting<TTargetingContextService>(this IHostApplicationBuilder builder,
                                                                   Action<AbTestingConfiguration> configure)
@@ -84,7 +84,7 @@ public static class IServiceCollectionExtension
         if (!configuration.UseDefaultControllers)
         {
             var appPartManager = app.ApplicationServices.GetRequiredService<ApplicationPartManager>();
-            var partToRemove = appPartManager.ApplicationParts.FirstOrDefault(a => ((AssemblyPart)a).Assembly == typeof(IServiceCollectionExtension).Assembly);
+            var partToRemove = appPartManager.ApplicationParts.FirstOrDefault(a => ((AssemblyPart)a).Assembly == typeof(ServiceCollectionExtension).Assembly);
 
             if (partToRemove != null)
             {
