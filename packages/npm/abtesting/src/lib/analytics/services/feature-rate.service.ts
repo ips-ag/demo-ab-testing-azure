@@ -9,7 +9,6 @@ export class FeatureRateService extends BaseService {
   constructor(private gaService: GoogleAnalyticsService) {
     super();
   }
-
   rateFeature(rating: number, feature: string, version: string) {
     this.gaService.triggerEvent("rate_feature", {
       feature: feature,
@@ -18,7 +17,6 @@ export class FeatureRateService extends BaseService {
     });
     localStorage.setItem(`rate_${feature}_${version}`, `${rating}`);
   }
-
   isRated(feature: string, version: string) {
     return localStorage.getItem(`rate_${feature}_${version}`) !== null;
   }
