@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BasketService } from './basket/basket.service';
 import { AccountService } from './account/account.service';
-import { ClarityService } from './analytics/services/clarity.service';
-import { GoogleAnalyticsService } from './analytics/services/google-analytics.service';
+import { ClarityService, GoogleAnalyticsService } from '@ips-ag/abtesting';
 
 @Component({
   selector: 'app-root',

@@ -11,8 +11,9 @@ import { ErrorInterceptor } from './core/interceptor/error.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptor/loading.interceptor';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { AnalyticsModule } from './analytics/analytics.module';
 import { StarRatingModule } from 'angular-star-rating';
+import { environment } from 'src/environments/environment';
+import { ABAnalyticsModule } from '@ips-ag/abtesting';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,7 +25,16 @@ import { StarRatingModule } from 'angular-star-rating';
     CoreModule,
     HomeModule,
     NgxSpinnerModule.forRoot({ type: 'square-jelly-box' }),
-    AnalyticsModule,
+    ABAnalyticsModule.forRoot({
+      analytics: {
+        google: {
+          trackingId: environment.analytics.googleAnalyticsMeasurementId,
+        },
+        clarity: {
+          trackingId: environment.analytics.clarityId,
+        },
+      },
+    }),
     StarRatingModule.forRoot(),
   ],
 

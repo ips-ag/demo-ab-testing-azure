@@ -9,7 +9,7 @@ FROM node:22 AS client
 WORKDIR /client
 COPY Client/ .  
 # Use 'COPY Client/ .' to copy the content of the Client directory
-RUN npm install
+RUN npm install --legacy-peer-deps
 ARG ANALYTICS_CLARITY_ID
 ARG ANALYTICS_GA_MEASUREMENT_ID
 ENV ANALYTICS_CLARITY_ID=${ANALYTICS_CLARITY_ID}
