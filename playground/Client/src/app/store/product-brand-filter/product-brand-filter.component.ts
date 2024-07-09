@@ -18,6 +18,7 @@ import { SettingsService } from 'src/app/settings/settings.service';
 import { Observable, Subject, share, startWith, takeUntil } from 'rxjs';
 import { FeatureFlags } from 'src/app/shared/models/featureFlag';
 import { GoogleAnalyticsService } from 'src/app/analytics/services/google-analytics.service';
+import { STABLE_SOFTWARE_VERSION } from 'src/app/account/constants';
 
 type ProductBrandFilterVersion =
   keyof typeof PRODUCT_BRAND_FILTER_COMPONENT_MAPS;
@@ -113,6 +114,10 @@ export class ProductBrandFilterComponent
         'ProductBrandFilter@' + this.showingVersion
       );
     }
+    //
+    this.googleAnalyticsService.trackUserGroup(
+      this.showingVersion === STABLE_SOFTWARE_VERSION? 'BaseGroup': 'ControlGroup'
+    );
   }
 
   selectBrand(brandIds: number[]) {

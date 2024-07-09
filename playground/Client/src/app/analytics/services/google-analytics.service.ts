@@ -67,4 +67,16 @@ export class GoogleAnalyticsService extends BaseService {
       user_id: hashedUserId, // Use the hashed version of the user ID
     });
   }
+
+  async trackUserGroup(group: "BaseGroup" | "ControlGroup") {
+    // Check if gtag is available
+    this.ensureGAExists();
+    // Send an event to Google Analytics to indicate the user is using a specific version of the app.
+    this.gtag("event", "user_group", {
+      event_category: "User",
+      event_label: group,
+      non_interaction: true, // Set to true to not affect bounce rate
+      user_group: group,
+    });
+  }
 }
