@@ -71,12 +71,15 @@ export class GoogleAnalyticsService extends BaseService {
   async trackUserGroup(group: "BaseGroup" | "ControlGroup") {
     // Check if gtag is available
     this.ensureGAExists();
-    // Send an event to Google Analytics to indicate the user is using a specific version of the app.
+    // Correctly set the user_group custom dimension for the user.
+    // This assumes 'user_group' is the parameter name for the custom dimension in Google Analytics.
+    this.gtag("set", { user_group: group });
+    // Now, send an event to indicate the user is using a specific version of the app.
+    // The user_group custom dimension will be included with all subsequent events for this user.
     this.gtag("event", "user_group", {
       event_category: "User",
       event_label: group,
       non_interaction: true, // Set to true to not affect bounce rate
-      user_group: group,
     });
   }
 }
