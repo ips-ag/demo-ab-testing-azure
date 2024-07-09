@@ -42,16 +42,16 @@ public static class IServiceCollectionExtension
         where TTargetingContextService : class, ITargetingContextService
     {
         var services = builder.Services;
+        var config = builder.Configuration.Get<AbTestingConfiguration>()!;
+        builder.Configuration.GetSection(configSection).Bind(config);
+        configure!.Invoke(config, builder.Configuration);
         services.AddOptions<AbTestingConfiguration>().Configure<IConfiguration>((o, c) =>
         {
-            c.GetSection(configSection).Bind(o);
-            configure!.Invoke(o, c);
+            o = config;
         });
-        //
-        var serviceProvider = services.BuildServiceProvider();
-        var configOptions = serviceProvider.GetOptionsValue<AbTestingConfiguration>(nameof(AbTestingConfiguration.AppConfigConnectionString));
+
         builder.Configuration.AddAzureAppConfiguration(options
-            => options.Connect(configOptions.AppConfigConnectionString)
+            => options.Connect(config.AppConfigConnectionString)
             .UseFeatureFlags(ffo =>
             {
                 ffo.CacheExpirationInterval = TimeSpan.FromSeconds(5);
@@ -61,13 +61,13 @@ public static class IServiceCollectionExtension
         var featureBuilder = builder.Services.AddAzureAppConfiguration()
             .AddFeatureManagement()
             .WithTargeting<TargetingContextAccessor>();
-        if (!string.IsNullOrEmpty(configOptions.AppInsightsConnectionString))
+        if (!string.IsNullOrEmpty(config.AppInsightsConnectionString))
         {
             featureBuilder.AddTelemetryPublisher<ApplicationInsightsTelemetryPublisher>();
             builder.Services.AddApplicationInsightsTelemetry(
             new ApplicationInsightsServiceOptions
             {
-                ConnectionString = configOptions.AppInsightsConnectionString,
+                ConnectionString = config.AppInsightsConnectionString,
                 EnableAdaptiveSampling = false
             })
             .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();

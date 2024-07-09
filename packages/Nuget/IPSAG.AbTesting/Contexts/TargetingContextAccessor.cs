@@ -18,7 +18,7 @@ internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor
             return (TargetingContext)value!;
         }
         var targetingContext = await distributionService.GetTargetingContextAsync(httpContext.RequestAborted).ConfigureAwait(false);
-        httpContext.Response.Headers.Append(DefaultHeader, targetingContext.Groups.Any() ? string.Join(";", targetingContext.Groups) : "Anonymous");
+        httpContext.Response.Headers.Append(DefaultHeader, targetingContext.Groups.Any() ? string.Join(";", targetingContext.Groups) : "anonymous");
         httpContext.Items[TargetingContextLookup] = targetingContext;
         return targetingContext;
     }
