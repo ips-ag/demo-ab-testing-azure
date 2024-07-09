@@ -7,16 +7,16 @@ import { CheckoutComponent } from '../checkout.component';
 @Component({
   selector: 'app-address',
   templateUrl: './address.component.html',
-  styleUrls: ['./address.component.scss']
+  styleUrls: ['./address.component.scss'],
 })
 export class AddressComponent implements OnInit {
   addressForm: FormGroup; // Initialize here
 
   constructor(
-      private formBuilder: FormBuilder,
-      private router: Router,
-      private checkoutComponent: CheckoutComponent
-     ) {
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private checkoutComponent: CheckoutComponent
+  ) {
     this.addressForm = this.formBuilder.group({
       Fname: ['', Validators.required],
       Lname: ['', Validators.required],
@@ -24,7 +24,6 @@ export class AddressComponent implements OnInit {
       City: ['', Validators.required],
       State: ['', Validators.required],
       ZipCode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
-
     });
   }
 
@@ -36,18 +35,15 @@ export class AddressComponent implements OnInit {
     if (this.addressForm.valid) {
       const addressData: Address = this.addressForm.value;
       // Do something with the submitted address data, e.g., send it to an API
-      console.log('Submitted Address:', addressData);
     }
   }
   goToNextStep() {
     if (this.addressForm.valid) {
       // Navigate to the shipment route
       this.router.navigate(['/checkout/shipment']);
-  
+
       // Set the current step in the CheckoutComponent
       this.checkoutComponent.setCurrentStep('shipment');
     }
   }
-  
-  }
-
+}

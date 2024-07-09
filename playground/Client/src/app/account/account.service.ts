@@ -9,7 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { GoogleAnalyticsService } from '../analytics/services/google-analytics.service';
+import { GoogleAnalyticsService } from '@ips-ag/abtesting';
 
 @Injectable({
   providedIn: 'root',

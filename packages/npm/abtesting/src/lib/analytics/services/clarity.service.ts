@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { BaseService } from './base.service';
+import { Injectable, Optional } from "@angular/core";
+import { BaseService } from "./base.service";
+import { Inject } from "@angular/core";
+import { ABTESTING_CLARITY_ID } from "../../injection-tokens";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClarityService extends BaseService {
-  private clarityId = environment.analytics.clarityId;
-  private scriptContent = `
+  private clarityId = "";
+  private get scriptContent() {
+    return `
       (function (c, l, a, r, i, t, y) {
         c[a] =
           c[a] ||
@@ -27,6 +29,11 @@ export class ClarityService extends BaseService {
         '${this.clarityId}'
       );
   `;
+  }
+  constructor(@Optional() @Inject(ABTESTING_CLARITY_ID) clarityId: string) {
+    super();
+    this.clarityId = clarityId;
+  }
   init() {
     this.addScriptToHead(undefined, this.scriptContent);
   }
