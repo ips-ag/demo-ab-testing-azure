@@ -11,16 +11,18 @@ type GtagEventParams = {
   user_group?: string;
 };
 
+type SendEvent = (command: "event", eventName: string, params?: GtagEventParams) => void;
+type SetProperties = (
+  command: "set",
+  commandData: {
+    user_group?: "BaseGroup" | "ControlGroup";
+    user_properties?: Record<string, string>;
+  },
+  params?: GtagEventParams
+) => void;
+
 interface CustomWindow extends Window {
-  gtag: (
-    command: string,
-    eventName:
-      | string
-      | {
-          user_group: "BaseGroup" | "ControlGroup";
-        },
-    params?: GtagEventParams
-  ) => void;
+  gtag: SendEvent | SetProperties;
 }
 
 @Injectable({
@@ -64,7 +66,7 @@ export class GoogleAnalyticsService extends BaseService {
   }
 
   triggerEvent(eventName: string, params: Record<string, unknown>) {
-    this.gtag("event", eventName, params);
+    (this.gtag as SendEvent)("event", eventName, params);
   }
   trackBounceRate(featureName: string) {
     // Wait for 30 seconds before marking the visitor as engaged.
@@ -73,7 +75,7 @@ export class GoogleAnalyticsService extends BaseService {
       this.ensureGAExists();
       // Send an event to Google Analytics to indicate the user is engaged with a specific feature.
       // This can help in adjusting the bounce rate as it indicates the user has interacted with the page.
-      this.gtag("event", "engagement", {
+      (this.gtag as SendEvent)("event", "engagement", {
         event_category: "User Engagement",
         event_label: `Engaged User - ${featureName}`,
         non_interaction: true, // Set to true to not affect bounce rate.
@@ -89,7 +91,7 @@ export class GoogleAnalyticsService extends BaseService {
     const hashedUserId = await this.calculateSHA256(userId);
 
     // Send a login event to Google Analytics with the hashed user ID
-    this.gtag("event", "login", {
+    (this.gtag as SendEvent)("event", "login", {
       event_category: "User Authentication",
       event_label: "Login",
       non_interaction: true, // Set to true to not affect bounce rate
@@ -101,14 +103,20 @@ export class GoogleAnalyticsService extends BaseService {
     this.ensureGAExists();
     // Correctly set the user_group custom dimension for the user.
     // This assumes 'user_group' is the parameter name for the custom dimension in Google Analytics.
-    this.gtag("set", { user_group: group });
+    (this.gtag as SetProperties)("set", { user_group: group });
     // Now, send an event to indicate the user is using a specific version of the app.
     // The user_group custom dimension will be included with all subsequent events for this user.
-    this.gtag("event", "user_group", {
+    (this.gtag as SendEvent)("event", "user_group", {
       event_category: "User",
       event_label: group,
       non_interaction: true, // Set to true to not affect bounce rate
       user_group: group, // Use the user_group value
+    });
+
+    (this.gtag as SetProperties)("set", {
+      user_properties: {
+        user_group: group, // Custom user property 'user_group'
+      },
     });
   }
 }
