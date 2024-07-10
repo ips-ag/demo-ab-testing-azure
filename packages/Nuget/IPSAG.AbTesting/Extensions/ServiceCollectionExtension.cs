@@ -16,7 +16,10 @@ using static System.ArgumentException;
 
 namespace IPSAG.AbTesting.Extensions;
 
-public static class IServiceCollectionExtension
+/// <summary>
+/// 
+/// </summary>
+public static class ServiceCollectionExtension
 {
     public static void AddAbTesting<TTargetingContextService>(this IHostApplicationBuilder builder,
                                                                   Action<AbTestingConfiguration> configure)
@@ -39,16 +42,16 @@ public static class IServiceCollectionExtension
         where TTargetingContextService : class, ITargetingContextService
     {
         var services = builder.Services;
+        var config = builder.Configuration.Get<AbTestingConfiguration>()!;
+        builder.Configuration.GetSection(configSection).Bind(config);
+        configure!.Invoke(config, builder.Configuration);
         services.AddOptions<AbTestingConfiguration>().Configure<IConfiguration>((o, c) =>
         {
-            c.GetSection(configSection).Bind(o);
-            configure!.Invoke(o, c);
+            o = config;
         });
-        //
-        var serviceProvider = services.BuildServiceProvider();
-        var configOptions = serviceProvider.GetOptionsValue<AbTestingConfiguration>(nameof(AbTestingConfiguration.AppConfigConnectionString));
+
         builder.Configuration.AddAzureAppConfiguration(options
-            => options.Connect(configOptions.AppConfigConnectionString)
+            => options.Connect(config.AppConfigConnectionString)
             .UseFeatureFlags(ffo =>
             {
                 ffo.CacheExpirationInterval = TimeSpan.FromSeconds(5);
@@ -58,13 +61,13 @@ public static class IServiceCollectionExtension
         var featureBuilder = builder.Services.AddAzureAppConfiguration()
             .AddFeatureManagement()
             .WithTargeting<TargetingContextAccessor>();
-        if (!string.IsNullOrEmpty(configOptions.AppInsightsConnectionString))
+        if (!string.IsNullOrEmpty(config.AppInsightsConnectionString))
         {
             featureBuilder.AddTelemetryPublisher<ApplicationInsightsTelemetryPublisher>();
             builder.Services.AddApplicationInsightsTelemetry(
             new ApplicationInsightsServiceOptions
             {
-                ConnectionString = configOptions.AppInsightsConnectionString,
+                ConnectionString = config.AppInsightsConnectionString,
                 EnableAdaptiveSampling = false
             })
             .AddSingleton<ITelemetryInitializer, TargetingTelemetryInitializer>();
@@ -81,7 +84,7 @@ public static class IServiceCollectionExtension
         if (!configuration.UseDefaultControllers)
         {
             var appPartManager = app.ApplicationServices.GetRequiredService<ApplicationPartManager>();
-            var partToRemove = appPartManager.ApplicationParts.FirstOrDefault(a => ((AssemblyPart)a).Assembly == typeof(IServiceCollectionExtension).Assembly);
+            var partToRemove = appPartManager.ApplicationParts.FirstOrDefault(a => ((AssemblyPart)a).Assembly == typeof(ServiceCollectionExtension).Assembly);
 
             if (partToRemove != null)
             {
@@ -92,6 +95,13 @@ public static class IServiceCollectionExtension
 
     }
 
+    public static IMvcBuilder ConfigureApiBehavior(this IMvcBuilder builder)
+    {
+        return builder.ConfigureApiBehaviorOptions(options =>
+        {
+            options.SuppressMapClientErrors = true;
+        });
+    }
     #region Internal
 
     internal static TData GetValue<TData>(this IOptions<TData> options, params string[] requiredParams) where TData : class, new()

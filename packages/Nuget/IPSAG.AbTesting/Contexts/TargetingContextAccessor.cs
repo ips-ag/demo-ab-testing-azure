@@ -8,6 +8,7 @@ internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor
                                         ITargetingContextService distributionService) : ITargetingContextAccessor
 {
     private const string TargetingContextLookup = $"{nameof(TargetingContextAccessor)}.{nameof(TargetingContext)}";
+    private static string DefaultHeader = $"{nameof(AbTesting)}-{nameof(TargetingContext.Groups)}".ToLower();
 
     public async ValueTask<TargetingContext> GetContextAsync()
     {
@@ -17,7 +18,7 @@ internal class TargetingContextAccessor(IHttpContextAccessor httpContextAccessor
             return (TargetingContext)value!;
         }
         var targetingContext = await distributionService.GetTargetingContextAsync(httpContext.RequestAborted).ConfigureAwait(false);
-        httpContext.Response.Headers.Append($"{nameof(AbTesting)}.{nameof(TargetingContext.Groups)}", string.Join(";", targetingContext.Groups));
+        httpContext.Response.Headers.Append(DefaultHeader, targetingContext.Groups.Any() ? string.Join(";", targetingContext.Groups) : "anonymous");
         httpContext.Items[TargetingContextLookup] = targetingContext;
         return targetingContext;
     }
