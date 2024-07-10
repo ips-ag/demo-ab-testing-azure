@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Optional } from "@angular/core";
 import { BaseService } from "./base.service";
 import { Inject } from "@angular/core";
 import { ABTESTING_CLARITY_ID } from "../../injection-tokens";
@@ -30,7 +30,7 @@ export class ClarityService extends BaseService {
       );
   `;
   }
-  constructor(@Inject(ABTESTING_CLARITY_ID) clarityId: string) {
+  constructor(@Optional() @Inject(ABTESTING_CLARITY_ID) clarityId: string) {
     super();
     this.clarityId = clarityId;
   }

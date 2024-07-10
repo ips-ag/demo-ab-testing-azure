@@ -1,20 +1,17 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import {
-  FeatureFlagKey,
-  FeatureFlagModel,
-  FeatureFlags,
-} from '../shared/models/featureFlag';
+import { FeatureFlags } from '../shared/models/featureFlag';
 import { map } from 'rxjs';
-import { isBoolean } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
   private apiUrl = `${environment.baseUrl}/api/ab-testing/feature-flags/`;
+  private isVariantMaps: Record<string, boolean> = {};
   constructor(private http: HttpClient) {}
+
   getFeatureFlags() {
     let headers = new HttpHeaders();
     headers = headers.set(
@@ -22,22 +19,27 @@ export class SettingsService {
       `Bearer ${localStorage.getItem('token')}`
     );
     return this.http
-      .get<FeatureFlags>(this.apiUrl, {
+      .get<
+        {
+          name: string;
+          value: string;
+          isVariant: boolean;
+        }[]
+      >(this.apiUrl, {
         headers,
       })
       .pipe(
-        map((res: any) => {
-          const featureFlags: FeatureFlags = {} as FeatureFlags;
-          const resData = res as FeatureFlagModel[];
-          for (const featureFlag of resData) {
-            featureFlags[featureFlag.name as FeatureFlagKey] =
-              featureFlag.isVariant
-                ? String(featureFlag.value)
-                : Boolean(featureFlag.value);
-          }
-
-          return featureFlags;
-        })
+        map((res) =>
+          res.reduce((acc, curr) => {
+            if (curr.isVariant) {
+              this.isVariantMaps[curr.name] = curr.isVariant;
+            }
+            return { ...acc, [curr.name]: curr.value };
+          }, {} as FeatureFlags)
+        )
       );
+  }
+  isVariant(name: string) {
+    return this.isVariantMaps[name];
   }
 }

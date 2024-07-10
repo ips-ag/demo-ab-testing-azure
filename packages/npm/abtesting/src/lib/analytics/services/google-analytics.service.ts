@@ -1,6 +1,27 @@
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Optional } from "@angular/core";
 import { BaseService } from "./base.service";
 import { ABTESTING_GTAG_ID } from "../../injection-tokens";
+
+type GtagEventParams = {
+  event_category?: string;
+  event_label?: string;
+  value?: number;
+  non_interaction?: boolean;
+  user_id?: string;
+  user_group?: string;
+};
+
+interface CustomWindow extends Window {
+  gtag: (
+    command: string,
+    eventName:
+      | string
+      | {
+          user_group: "BaseGroup" | "ControlGroup";
+        },
+    params?: GtagEventParams
+  ) => void;
+}
 
 @Injectable({
   providedIn: "root",
@@ -15,10 +36,13 @@ export class GoogleAnalyticsService extends BaseService {
 
     gtag('config', '${this.gtagId}');`;
   }
-  private gtagSrc = "https://www.googletagmanager.com/gtag/js?id=" + this.gtagId;
-  private gtag = (window as typeof window & { gtag: any }).gtag;
+  private get gtagSrc() {
+    return "https://www.googletagmanager.com/gtag/js?id=" + this.gtagId;
+  }
+  // @eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private gtag = (window as unknown as CustomWindow).gtag;
   private engagementTimeout = 30000; // 30 seconds
-  constructor(@Inject(ABTESTING_GTAG_ID) gtagId: string) {
+  constructor(@Optional() @Inject(ABTESTING_GTAG_ID) gtagId: string) {
     super();
     this.gtagId = gtagId;
     this.trackBounceRate = this.trackBounceRate.bind(this);
@@ -31,13 +55,15 @@ export class GoogleAnalyticsService extends BaseService {
   }
   ensureGAExists() {
     if (!this.gtag) {
-      if (!(window as typeof window & { gtag: any }).gtag) {
+      if (!(window as unknown as CustomWindow).gtag) {
         this.init();
       }
-      this.gtag = (window as typeof window & { gtag: any }).gtag;
+
+      this.gtag = (window as unknown as CustomWindow).gtag;
     }
   }
-  triggerEvent(eventName: string, params: Record<string, any>) {
+
+  triggerEvent(eventName: string, params: Record<string, unknown>) {
     this.gtag("event", eventName, params);
   }
   trackBounceRate(featureName: string) {
@@ -68,6 +94,21 @@ export class GoogleAnalyticsService extends BaseService {
       event_label: "Login",
       non_interaction: true, // Set to true to not affect bounce rate
       user_id: hashedUserId, // Use the hashed version of the user ID
+    });
+  }
+  async trackUserGroup(group: "BaseGroup" | "ControlGroup") {
+    // Check if gtag is available
+    this.ensureGAExists();
+    // Correctly set the user_group custom dimension for the user.
+    // This assumes 'user_group' is the parameter name for the custom dimension in Google Analytics.
+    this.gtag("set", { user_group: group });
+    // Now, send an event to indicate the user is using a specific version of the app.
+    // The user_group custom dimension will be included with all subsequent events for this user.
+    this.gtag("event", "user_group", {
+      event_category: "User",
+      event_label: group,
+      non_interaction: true, // Set to true to not affect bounce rate
+      user_group: group, // Use the user_group value
     });
   }
 }
