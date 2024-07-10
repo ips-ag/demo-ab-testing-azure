@@ -26,6 +26,7 @@ import {
   PRODUCT_BRAND_FILTER_FEEDBACK_ENABLED_VERSIONS,
   ProductBrandFilterVersion,
 } from './constants';
+import { STABLE_SOFTWARE_VERSION } from 'src/app/account/constants';
 
 @Component({
   selector: 'app-product-brand-filter',
