@@ -11,7 +11,7 @@ on:
       - feature/*
     paths:
       - playground/**
-      - '!playground/Nuget/**'
+      - '!playground/README.md'
 
   # Allow manually trigger of the jobs
   workflow_dispatch:
