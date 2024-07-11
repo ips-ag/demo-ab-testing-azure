@@ -2,10 +2,9 @@
 ## Introduction
 The A/B Testing Nuget is a .NET-based library designed to facilitate A/B testing experiments in a controlled environment. It should be included together with an npm package to complete the integration, see example in the playground.
 
-| [playground][playground]         | [Source code][playground_source]  | [README][playground_readme] |
-| ---------------------------------|---------------------------------- | --------------------------- |
-| [IPSAG.AbTesting][package]       | [Source code][source]             | [README][source_readme]     |
-| [@ips-ag/abtesting][npm_package] | [Source code][npm_source]         | [README][npm_readme]        |
+* [playground][playground]         | [Source code][playground_source]  | [README][playground_readme]
+* [IPSAG.AbTesting][package]       | [Source code][source]             | [README][source_readme]
+* [@ips-ag/abtesting][npm_package] | [Source code][npm_source]         | [README][npm_readme]
 
 ## Getting Started
 
