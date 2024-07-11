@@ -9,7 +9,7 @@
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<Authors>IPS-AG</Authors>
 	<PackageTags>Microsoft Azure Application Configuration;Data;AppConfig;ABTesting;A/B Testing;AB;AB Testing;$(PackageCommonTags)</PackageTags> 
-	<PackageIcon>ips-ag.png</PackageIcon>
+	<PackageIcon>ips-ag.jpg</PackageIcon>
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
@@ -26,6 +26,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <None Update="README.md" Pack="true" PackagePath="."> </None>
-		<None Include="ips-ag.png" Pack="true" PackagePath="" />
+	  <None Include="ips-ag.jpg" Pack="true" PackagePath="" />
 	</ItemGroup>
 </Project>
