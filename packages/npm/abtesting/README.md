@@ -33,7 +33,7 @@ Latest version available for each version of Angular
 To install this library, run:
 
 ```bash
-$ npm install @ips-ag/abtesting --save
+$ npm install @ips-ag/abtesting --legacy-peer-deps
 ```
 ## Usage
 
@@ -96,30 +96,44 @@ export class AppComponent implements OnInit {
 ```
 
 In your components/services where you want to collect user information
+
+`GoogleAnalyticsService`
+
 ```typescript
 ...
-import { GoogleAnalyticsService, RenderService } from '@ips-ag/abtesting';
+import { GoogleAnalyticsService } from '@ips-ag/abtesting';
 ...
 export class MyComponentOrService{
     constructor(
         ...
-        private featureRateService: FeatureRateService,
-        private renderService: RenderService,
-        private gaService: GoogleAnalyticsService // inject GoogleAnalyticsService
+        private gaService: GoogleAnalyticsService 
     ) {
-        // #region GoogleAnalyticsService
         // Track user by userId
-        this.gaService.trackLogin('userId');
+        this.gaService.trackLogin(
+          userId // user identifier
+          );
         // Track user by user group
-        this.gaService.trackUserGroup('userGroup');
+        this.gaService.trackUserGroup(
+          userGroup // experimental group
+          );
         // Track bounce rate
-        this.gaService.trackBounceRate();
-        // #endregion
-        // Register version of component to render
-        this.renderService.registerComponent(
-            version, // experimental version
-            component // Component instance
-            );
+        this.gaService.trackBounceRate(
+          featureVersion // feature version
+        );        
+    }
+}
+```
+`FeatureRateService`
+
+```typescript
+...
+import { FeatureRateService } from '@ips-ag/abtesting';
+...
+export class MyComponentOrService{
+    constructor(
+        ...
+        private featureRateService: FeatureRateService
+    ) {        
         // Rating your experimental for a feature     
          this.featureRateService?.rateFeature(
             rating, // rating score
@@ -133,7 +147,34 @@ export class MyComponentOrService{
             );
     }
 }
-
+```
+`RenderService`
+```typescript
+...
+import { RenderService } from '@ips-ag/abtesting';
+...
+export class MyComponentOrService{
+    constructor(
+        ...
+        private renderService: RenderService
+    ) {        
+        // Register version of component to render
+        this.renderService.registerComponent(
+            version, // experimental version
+            component // Component instance
+            );  
+      // load component
+      const componentRef =
+        this.renderService.loadComponent<IProductBrandFilterComponent>(
+          this.dynamicComponentLoader.viewContainerRef, // container ref
+          version, // experimental version
+          {
+            brands,
+            params,
+          } as IProductBrandFilterComponent  // Component params
+        );
+    }
+}
 ```
 
 ## Author
