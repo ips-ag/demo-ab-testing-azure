@@ -31,6 +31,7 @@ jobs:
   build:
     env:
         BUILD_CONFIG: 'Release'
+        SHARED_ARGS: '-p:RepositoryUrl=${{ github.server_url }}/${{ github.repository }}/packages/Nuget/IPSAG.AbTesting -p:RepositoryType=git'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -44,11 +45,11 @@ jobs:
           echo $BUILD_NUMBER
       - name: Build & Pack Preview
         if: ${{ github.event.inputs.dispatch-type != 'Release'}}
-        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER
+        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER ${{ env.SHARED_ARGS}}
 
       - name: Build & Pack Release
         if: ${{ github.event.inputs.dispatch-type == 'Release'}}
-        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}
+        run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }} ${{ env.SHARED_ARGS}}
 
       - name: Push
         run: dotnet nuget push **\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_API_KEY}
