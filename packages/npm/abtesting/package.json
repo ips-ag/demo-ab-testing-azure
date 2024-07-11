@@ -22,10 +22,10 @@
     "url": "git+https://github.com/ips-ag/demo-ab-testing-azure.git#main"
   },
   "keywords": [
-    "abtesting"
+    "abtesting", "ab", "testing", "a/b"
   ],
   "author": "IPS-AG",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ips-ag/demo-ab-testing-azure/issues"
   },

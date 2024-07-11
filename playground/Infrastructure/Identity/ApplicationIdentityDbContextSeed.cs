@@ -1,5 +1,6 @@
 using Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Identity
@@ -19,6 +20,7 @@ namespace Infrastructure.Identity
 
         private static async Task SeedUserAsync(UserManager<ApplicationUser> userManager, ApplicationIdentityDbContext dbContext)
         {
+            await userManager.Users.ExecuteDeleteAsync();
             if (!userManager.Users.Any())
             {
                 var users = new List<ApplicationUser>
@@ -40,9 +42,57 @@ namespace Infrastructure.Identity
                     }
                 },
                 new() {
+                    UserName = "uyen.dinhluu1@ips-ag.com",
+                    Email = "uyen.dinhluu@ips-ag.com",
+                    DisplayName = "Uyen Luu1 - EarlyAccess",
+                    SoftwareDistributionGroup = "EarlyAccess",
+                    Address = new Address
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Fname = "Uyen",
+                        Lname = "Luu",
+                        Street = "11 Le Dinh Ly",
+                        City = "Danang",
+                        State = "Jharkhand",
+                        ZipCode = "123456"
+                    }
+                },
+                new() {
+                    UserName = "uyen.dinhluu2@ips-ag.com",
+                    Email = "uyen.dinhluu@ips-ag.com",
+                    DisplayName = "Uyen Luu2 - EarlyAccess",
+                    SoftwareDistributionGroup = "EarlyAccess",
+                    Address = new Address
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Fname = "Uyen",
+                        Lname = "Luu",
+                        Street = "11 Le Dinh Ly",
+                        City = "Danang",
+                        State = "Jharkhand",
+                        ZipCode = "123456"
+                    }
+                },
+                new() {
                     UserName = "anh.quangtran@ips-ag.com",
                     Email = "anh.quangtran@ips-ag.com",
                     DisplayName = "Steve - Stable",
+                    SoftwareDistributionGroup = "Stable",
+                    Address = new Address
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Fname = "Steve",
+                        Lname = "Steve",
+                        Street = "11 Le Dinh Ly",
+                        City = "Danang",
+                        State = "Jharkhand",
+                        ZipCode = "123456"
+                    }
+                },
+                new() {
+                    UserName = "anh.quangtran1@ips-ag.com",
+                    Email = "anh.quangtran@ips-ag.com",
+                    DisplayName = "Steve1 - Stable",
                     SoftwareDistributionGroup = "Stable",
                     Address = new Address
                     {
