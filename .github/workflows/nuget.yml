@@ -31,7 +31,7 @@ jobs:
   build:
     env:
         BUILD_CONFIG: 'Release'
-        SHARED_ARGS: '-p:RepositoryUrl=${{ github.server_url }}/${{ github.repository }}/tree/${{ github.base_ref}}/packages/Nuget/IPSAG.AbTesting -p:RepositoryType=git'
+        SHARED_ARGS: '-p:RepositoryUrl=${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref}}/packages/Nuget/IPSAG.AbTesting -p:RepositoryType=git'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -43,6 +43,7 @@ jobs:
         run: |
           echo "BUILD_NUMBER=${{ github.run_number }}.${{ github.run_attempt }}" >> $GITHUB_ENV
           echo $BUILD_NUMBER
+          
       - name: Build & Pack Preview
         if: ${{ github.event.inputs.dispatch-type != 'Release'}}
         run: dotnet build ${{ env.projectPath }}/${{ env.projectName }}.csproj --configuration $BUILD_CONFIG -p:Version=${{ env.NUGET_VERSION }}-preview$BUILD_NUMBER ${{ env.SHARED_ARGS}}
