@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
   EXPERIMENTAL_SOFTWARE_VERSION,
+  EXPERIMENTAL_USER_GROUP,
   STABLE_SOFTWARE_VERSION,
+  STABLE_USER_GROUP,
 } from '../constants';
 
 @Component({
@@ -49,8 +51,8 @@ export class RegisterComponent {
       this.loadingService.loading();
       this.registerForm.value.softwareDistributionGroup = this.registerForm
         .value?.softwareDistributionGroup
-        ? EXPERIMENTAL_SOFTWARE_VERSION
-        : STABLE_SOFTWARE_VERSION;
+        ? EXPERIMENTAL_USER_GROUP
+        : STABLE_USER_GROUP;
 
       this.accountService.register(this.registerForm.value).subscribe({
         next: (user) => {
