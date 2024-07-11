@@ -31,7 +31,7 @@ jobs:
   build:
     env:
         BUILD_CONFIG: 'Release'
-        SHARED_ARGS: '-p:RepositoryUrl=${{ github.server_url }}/${{ github.repository }}/packages/Nuget/IPSAG.AbTesting -p:RepositoryType=git'
+        SHARED_ARGS: '-p:RepositoryUrl=${{ github.server_url }}/${{ github.repository }}/tree/${{ github.base_ref}}/packages/Nuget/IPSAG.AbTesting -p:RepositoryType=git'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

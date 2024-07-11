@@ -1,16 +1,11 @@
-<style>
-    img[alt=logo] { width: 20px; top: 3px; position: relative; margin-right: 5px;}
-</style>
-
 # IPSAG.AbTesting library for .NET
-[![image](../../assets/images/ips-ag.svg)][IPS]
 ## Introduction
 The A/B Testing Nuget is a .NET-based library designed to facilitate A/B testing experiments in a controlled environment. It should be included together with an npm package to complete the integration, see example in the playground.
 
 | [playground][playground]          | [Source code][playground_source]                        |
 |-------------------|--------------------------------------------|
-| ![logo](../../assets/images/nuget.svg) [IPSAG.AbTesting][package]      |[Source code][source] |
-| ![logo](../../assets/images/npm.png) [@ips-ag/abtesting][npm_package]  | [Source code][npm_source] |
+| [IPSAG.AbTesting][package]      |[Source code][source] |
+| [@ips-ag/abtesting][npm_package]  | [Source code][npm_source] |
 
 ## Getting Started
 
@@ -135,7 +130,33 @@ public class AbTestingController(IConfigurationService abTestingConfigService) :
     }
 }
 ```
-![alt text](../../assets/images/ab-testing-swagger.png)
+
+Request sample
+```bat
+curl -X 'GET' \
+  'http://localhost:5103/api/ab-testing/feature-flags' \
+  -H 'accept: application/json'
+```
+Response body
+``` JSON
+[
+  {
+    "name": "ShopFilter",
+    "value": "False",
+    "isVariant": true
+  },
+  {
+    "name": "ShopFilterEarlyAccess",
+    "value": "False",
+    "isVariant": false
+  },
+  {
+    "name": "ShopFilterVersion",
+    "value": "0.0.1",
+    "isVariant": true
+  }
+]
+```
 
 But you could also use your own controllers by removing the default controllers and defining your controllers and injecting IConfigurationService
 
@@ -157,7 +178,7 @@ public class MyController(IConfigurationService abTestingConfigService)
 ```
 
 ## Related Packages
-* [JetBrains.Annotations](https://www.nuget.org/packages/JetBrains.Annotations)
+* [JetBrains.Annotations](https://www.nuget.org/packages/JetBrains.Annotations) (>= 2024.2.0)
 * [Microsoft.Azure.AppConfiguration.AspNetCore](https://www.nuget.org/packages/Microsoft.Azure.AppConfiguration.AspNetCore/8.0.0-preview.2) (>= 8.0.0-preview.2)
 * [Microsoft.FeatureManagement.AspNetCore](https://www.nuget.org/packages/Microsoft.FeatureManagement.AspNetCore/4.0.0-preview3) (>= 4.0.0-preview3)
 * [Microsoft.FeatureManagement.Telemetry.ApplicationInsights](https://www.nuget.org/packages/Microsoft.FeatureManagement.Telemetry.ApplicationInsights/4.0.0-preview3) (>= 4.0.0-preview3)
@@ -165,7 +186,7 @@ public class MyController(IConfigurationService abTestingConfigService)
 
 ## License
 
-* The `IPSAG.AbTesting` NuGet package and its source code under the [`packages/Nuget` directory](/packages/Nuget/IPSAG.AbTesting) are distributed under the terms of the [MIT License](../../../LICENSE).
+* The `IPSAG.AbTesting` NuGet package and its source code under the [`packages/Nuget` directory][source] are distributed under the terms of the [MIT License][license].
 
 ## Feedback
 
@@ -186,3 +207,6 @@ We value your feedback! If you have any suggestions, bug reports, or feature req
 [app_config_create_portal]: https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-azure-app-configuration-create?tabs=azure-portal
 [app_config_create_cli]: https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-azure-app-configuration-create?tabs=azure-cli
 [app_insights_docs]: https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview
+[license]: https://github.com/ips-ag/demo-ab-testing-azure/blob/main/LICENSE
+[nuget_icon]: https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png
+[npm_icon]: https://static-production.npmjs.com/7a7ffabbd910fc60161bc04f2cee4160.png
