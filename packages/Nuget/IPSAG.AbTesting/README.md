@@ -34,13 +34,13 @@ With these prerequisites in place, you're ready to start using the A/B Testing l
 
 In order to interact with the A/B Testing service, you'll need to configure connection to Azure App Configuration.
 
-```C# Snippet:SampleSnippetsAppConfig_Auth
+```C# 
 // Create Host builder
 var builder = WebApplication.CreateBuilder(args);
 // Sample connection strings
 var (appConfigCs, appInsightsCs) = ("<AppConfigConnectionString>", "<AppInsightsConnectionString>");
 ```
-```C# Snippet:SampleSnippetsAppConfig_Auth
+```C# 
 // Configure A/B Testing by providing connection to App Configuration & App Insights
 // By options
 builder.AddAbTesting<TargetingContextService>(options =>
@@ -60,7 +60,7 @@ builder.AddAbTesting<TargetingContextService>((options, configuration) =>
 builder.AddAbTesting<TargetingContextService>(appConfigCs!,
                                               appInsightsCs);
 ```
-```C# Snippet:SampleSnippetsAppConfig_Auth
+```C# 
 // Configure A/B Testing by providing connection to App Configuration only
 //By options
 builder.AddAbTesting<TargetingContextService>(options =>
@@ -77,7 +77,7 @@ builder.AddAbTesting<TargetingContextService>((options, configuration) =>
 // OR by parameters
 builder.AddAbTesting<TargetingContextService>(appConfigCs!);
 ```
-```C# Snippet:SampleSnippetsAppConfig_Auth
+```C# 
 var app = builder.Build();
 // If you are using Authorization information to build the TargetingContext,
 // please ensure that app.UseAbTesting() was placed after app.UseAuthentication(); & app.UseAuthorization();
@@ -87,7 +87,7 @@ app.UseAbTesting();
 The `TargetingContextService` is an implementation from the interface `IPSAG.AbTesting.Services.ITargetingContextService` which is required to use A/B Testing package.
 
 There, you could define your own logic to create the `TargetingContext` which can reflect to App Configuration
-```C# Snippet:SampleSnippetsAppConfig_Auth
+```C# 
 // Example
 public class TargetingContextService(IHttpContextAccessor contextAccessor) : ITargetingContextService
 {
@@ -116,7 +116,7 @@ public class TargetingContextService(IHttpContextAccessor contextAccessor) : ITa
 
 By default, a default AbTestingController would be injected to your application
 
-``` C# Snippet:SampleSnippetsAppConfig_Auth
+``` C# 
 [Route("api/ab-testing")]
 public class AbTestingController(IConfigurationService abTestingConfigService) : BaseApiController
 {
@@ -159,7 +159,7 @@ Response body
 
 But you could also use your own controllers by removing the default controllers and defining your controllers and injecting IConfigurationService
 
-``` C# Snippet:SampleSnippetsAppConfig_Auth
+``` C# 
 // Remove default controllers
 builder.AddAbTesting<TargetingContextService>(options =>
 {
