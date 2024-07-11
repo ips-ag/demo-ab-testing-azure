@@ -54,6 +54,18 @@ export class RegisterComponent {
         ? EXPERIMENTAL_USER_GROUP
         : STABLE_USER_GROUP;
 
+      if (
+        !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}/.test(
+          this.registerForm.value.password
+        )
+      ) {
+        this.loadingService.idle();
+        this.toastr.error(
+          'Password must contain at least one digit, one lowercase letter, one uppercase letter, one special character, and be at least 8 characters long'
+        );
+        return;
+      }
+
       this.accountService.register(this.registerForm.value).subscribe({
         next: (user) => {
           // Handle successful registration
