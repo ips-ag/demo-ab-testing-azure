@@ -21,89 +21,29 @@ namespace Infrastructure.Identity
         {
             if (!userManager.Users.Any())
             {
-                var users = new List<ApplicationUser>
-            {
-                new() {
-                    UserName = "uyen.dinhluu@ips-ag.com",
-                    Email = "uyen.dinhluu@ips-ag.com",
-                    DisplayName = "Uyen Luu - EarlyAccess",
+                var userByGroup = new Dictionary<string, string[]>
+                {
+                    {"EarlyAccess" , ["uyen.dinhluu@ips-ag.com", "uyen1.dinhluu@ips-ag.com", "uyen2.dinhluu@ips-ag.com"]},
+                    {"Stable" , ["anh.quangtran@ips-ag.com", "anh1.quangtran@ips-ag.com"]}
+                };
+
+                var users = userByGroup.SelectMany(g => g.Value.Select((emailAddress, index) => new ApplicationUser
+                {
+                    UserName = emailAddress,
+                    Email = emailAddress,
+                    DisplayName = $"Uyen Luu{(index > 0 ? index : string.Empty)} - EarlyAccess",
                     SoftwareDistributionGroup = "EarlyAccess",
                     Address = new Address
                     {
                         Id = Guid.NewGuid().ToString(),
-                        Fname = "Uyen",
-                        Lname = "Luu",
+                        Fname = "Fname",
+                        Lname = "Lname",
                         Street = "11 Le Dinh Ly",
                         City = "Danang",
-                        State = "Jharkhand",
-                        ZipCode = "123456"
+                        State = "Thanh Khe",
+                        ZipCode = "50000"
                     }
-                },
-                new() {
-                    UserName = "uyen.dinhluu1@ips-ag.com",
-                    Email = "uyen.dinhluu@ips-ag.com",
-                    DisplayName = "Uyen Luu1 - EarlyAccess",
-                    SoftwareDistributionGroup = "EarlyAccess",
-                    Address = new Address
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Fname = "Uyen",
-                        Lname = "Luu",
-                        Street = "11 Le Dinh Ly",
-                        City = "Danang",
-                        State = "Jharkhand",
-                        ZipCode = "123456"
-                    }
-                },
-                new() {
-                    UserName = "uyen.dinhluu2@ips-ag.com",
-                    Email = "uyen.dinhluu@ips-ag.com",
-                    DisplayName = "Uyen Luu2 - EarlyAccess",
-                    SoftwareDistributionGroup = "EarlyAccess",
-                    Address = new Address
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Fname = "Uyen",
-                        Lname = "Luu",
-                        Street = "11 Le Dinh Ly",
-                        City = "Danang",
-                        State = "Jharkhand",
-                        ZipCode = "123456"
-                    }
-                },
-                new() {
-                    UserName = "anh.quangtran@ips-ag.com",
-                    Email = "anh.quangtran@ips-ag.com",
-                    DisplayName = "Steve - Stable",
-                    SoftwareDistributionGroup = "Stable",
-                    Address = new Address
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Fname = "Steve",
-                        Lname = "Steve",
-                        Street = "11 Le Dinh Ly",
-                        City = "Danang",
-                        State = "Jharkhand",
-                        ZipCode = "123456"
-                    }
-                },
-                new() {
-                    UserName = "anh.quangtran1@ips-ag.com",
-                    Email = "anh.quangtran@ips-ag.com",
-                    DisplayName = "Steve1 - Stable",
-                    SoftwareDistributionGroup = "Stable",
-                    Address = new Address
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Fname = "Steve",
-                        Lname = "Steve",
-                        Street = "11 Le Dinh Ly",
-                        City = "Danang",
-                        State = "Jharkhand",
-                        ZipCode = "123456"
-                    }
-                }
-            };
+                }));
 
                 foreach (var user in users)
                 {
