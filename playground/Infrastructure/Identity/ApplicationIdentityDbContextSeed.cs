@@ -31,8 +31,8 @@ namespace Infrastructure.Identity
                 {
                     UserName = emailAddress,
                     Email = emailAddress,
-                    DisplayName = $"Uyen Luu{(index > 0 ? index : string.Empty)} - EarlyAccess",
-                    SoftwareDistributionGroup = "EarlyAccess",
+                    DisplayName = $"{g.Key} {index + 1}",
+                    SoftwareDistributionGroup = g.Key,
                     Address = new Address
                     {
                         Id = Guid.NewGuid().ToString(),

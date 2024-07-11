@@ -22,7 +22,7 @@
     "url": "git+https://github.com/ips-ag/demo-ab-testing-azure.git#main"
   },
   "keywords": [
-    "abtesting", "ab", "testing", "a/b"
+    "abtesting", "ab", "testing", "a/b", "angular"
   ],
   "author": "IPS-AG",
   "license": "MIT",
