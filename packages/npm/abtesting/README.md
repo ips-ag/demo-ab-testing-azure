@@ -20,16 +20,120 @@
 
 ### ✨ [Demo](https://abtesting-playground.nicebeach-03e1bf22.westeurope.azurecontainerapps.io)
 
-## Install
+## Dependencies
 
-```sh
-npm install @ips-ag/abtesting@latest
+Latest version available for each version of Angular
+
+| @ips-ag/abtesting | Angular |
+|---------------------|---------|
+| 0.x.x               | 17.x    |
+
+## Installation
+
+To install this library, run:
+
+```bash
+$ npm install @ips-ag/abtesting --save
 ```
-
 ## Usage
 
-```sh
-TBD
+In your `app.module.ts`
+
+```typescript
+import { Component } from '@angular/core';
+...
+import { ABAnalyticsModule } from '@ips-ag/abtesting';
+...
+@NgModule({
+  declarations: [...],
+  imports: [
+    ...
+    ABAnalyticsModule.forRoot({
+      analytics: {
+        google: {
+          trackingId: // add your googleAnalyticsMeasurementId,
+        },
+        clarity: {
+          trackingId: // add your MS clarityId,
+        },
+      },
+    }),
+    ...
+  ],
+
+  providers: [
+    ...
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+In your `app.component.ts` where you want to initialize the A/B Testing service
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+...
+import { ClarityService, GoogleAnalyticsService } from '@ips-ag/abtesting';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+})
+export class AppComponent implements OnInit {
+  ...
+  constructor(
+    ...
+    private clarityService: ClarityService,
+    private googleAnalyticsService: GoogleAnalyticsService
+  ) {
+    this.googleAnalyticsService.init();
+    this.clarityService.init();
+  }
+  ...
+}
+```
+
+In your components/services where you want to collect user information
+```typescript
+...
+import { GoogleAnalyticsService, RenderService } from '@ips-ag/abtesting';
+...
+export class MyComponentOrService{
+    constructor(
+        ...
+        private featureRateService: FeatureRateService,
+        private renderService: RenderService,
+        private gaService: GoogleAnalyticsService // inject GoogleAnalyticsService
+    ) {
+        // #region GoogleAnalyticsService
+        // Track user by userId
+        this.gaService.trackLogin('userId');
+        // Track user by user group
+        this.gaService.trackUserGroup('userGroup');
+        // Track bounce rate
+        this.gaService.trackBounceRate();
+        // #endregion
+        // Register version of component to render
+        this.renderService.registerComponent(
+            version, // experimental version
+            component // Component instance
+            );
+        // Rating your experimental for a feature     
+         this.featureRateService?.rateFeature(
+            rating, // rating score
+            this.feature, // feature name
+            this.version // feature version
+        );
+        // Check if a feature has already rated
+        this.featureRateService?.isRated(
+            this.feature, // feature name
+            this.version // feature version
+            );
+    }
+}
+
 ```
 
 ## Author
