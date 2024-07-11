@@ -2,10 +2,10 @@
 ## Introduction
 The A/B Testing Nuget is a .NET-based library designed to facilitate A/B testing experiments in a controlled environment. It should be included together with an npm package to complete the integration, see example in the playground.
 
-| [playground][playground]          | [Source code][playground_source]                        |
-|-------------------|--------------------------------------------|
-| [IPSAG.AbTesting][package]      |[Source code][source] |
-| [@ips-ag/abtesting][npm_package]  | [Source code][npm_source] |
+| [playground][playground]         | [Source code][playground_source]  | [README][playground_readme] |
+| ---------------------------------|---------------------------------- | --------------------------- |
+| [IPSAG.AbTesting][package]       | [Source code][source]             | [README][source_readme]     |
+| [@ips-ag/abtesting][npm_package] | [Source code][npm_source]         | [README][npm_readme]        |
 
 ## Getting Started
 
@@ -197,6 +197,9 @@ We value your feedback! If you have any suggestions, bug reports, or feature req
 [source]: https://github.com/ips-ag/demo-ab-testing-azure/tree/main/packages/Nuget/IPSAG.AbTesting
 [npm_source]: https://github.com/ips-ag/demo-ab-testing-azure/tree/main/packages/npm/abtesting
 [playground_source]: https://github.com/ips-ag/demo-ab-testing-azure/tree/main/playground
+[source_readme]: https://github.com/ips-ag/demo-ab-testing-azure/tree/main/packages/Nuget/IPSAG.AbTesting/README.md
+[npm_readme]: https://github.com/ips-ag/demo-ab-testing-azure/tree/main/packages/npm/abtesting/README.md
+[playground_readme]: https://github.com/ips-ag/demo-ab-testing-azure/tree/main/playground/README.md
 [package]: https://www.nuget.org/packages/IPSAG.AbTesting/
 [nuget]: https://www.nuget.org/
 [npm_package]: https://www.npmjs.com/package/@ips-ag/abtesting
