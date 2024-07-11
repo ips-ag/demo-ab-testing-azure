@@ -1,6 +1,5 @@
 using Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Identity
@@ -20,7 +19,6 @@ namespace Infrastructure.Identity
 
         private static async Task SeedUserAsync(UserManager<ApplicationUser> userManager, ApplicationIdentityDbContext dbContext)
         {
-            await userManager.Users.ExecuteDeleteAsync();
             if (!userManager.Users.Any())
             {
                 var users = new List<ApplicationUser>
