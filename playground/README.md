@@ -1,19 +1,30 @@
-# A/B Testing Playground
 
+# A/B Testing Playground
+[![image](../docs/images/ips-ag.svg)][IPS]
 ## Introduction
 
 The A/B Testing Playground is a comprehensive suite designed to facilitate A/B testing experiments in a controlled environment. It consists of two main components: an API that serves as the backend, providing endpoints for managing and tracking A/B tests, and a Client application that offers a user-friendly interface for setting up and monitoring these tests. This setup aims to simplify the process of conducting A/B tests, making it accessible to users with varying levels of technical expertise.
 
 ### Flow diagram
    ![alt text](../docs/diagrams/architecture-diagram.PNG)
-
+   **Notes**
+   - Consumer Application: Your application
+      - API: .NET
+      - UI: Angular
+   - Azure Services: 
+      - App Configuration under your Azure subscription
+   - Analytics Platforms
+      - Google Analytics
+      - Microsoft Clarify
+   - A/B Testng solution
+      - API: using ![logo](../docs/images/nuget.svg)[IPSAG.AbTesting][nuget_package]
+      - UI: using ![logo](../docs/images/npm.png)[@ips-ag/abtesting][npm_package]
 ## Getting Started
-
 ### Prerequisites
 Before you can run this playground, ensure you have the following prerequisites installed on your system:
 - [Azure subscription][azure_sub]
-- Create [Google Analytics][google_analytics] and [Find your Google tag ID][google_tag_id]
-- [Microsoft Clarify][ms_clarify] and [Find your Locate Project ID][clarify_id]
+- Setup [Google Analytics][google_analytics] and [Find your Google tag ID][google_tag_id]
+- Setup [Microsoft Clarify][ms_clarify] and [Find your Locate Project ID][clarify_id]
 - **.NET 8.0 or higher SDK Application**: Required to install the Nuget. You can download it from [https://dotnet.microsoft.com/download](https://dotnet.microsoft.com/download).
 - **Docker Destop Engine**: 
    * [Install Docker Desktop on Windows][docker_window]
@@ -118,3 +129,7 @@ We value your feedback! If you have any suggestions, bug reports, or feature req
 [docker_linux]: https://docs.docker.com/desktop/install/linux-install/
 [bicep_tools]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install
 [create_acr]: https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli#create-a-new-acr
+
+<style>
+    img[alt=logo] { width: 20px; top: 3px; position: relative; margin-right: 5px;}
+</style>
