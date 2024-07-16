@@ -210,5 +210,3 @@ We value your feedback! If you have any suggestions, bug reports, or feature req
 [app_config_create_cli]: https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-azure-app-configuration-create?tabs=azure-cli
 [app_insights_docs]: https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview
 [license]: https://github.com/ips-ag/demo-ab-testing-azure/blob/main/LICENSE
-[nuget_icon]: https://www.nuget.org/Content/gallery/img/default-package-icon-256x256.png
-[npm_icon]: https://static-production.npmjs.com/7a7ffabbd910fc60161bc04f2cee4160.png
