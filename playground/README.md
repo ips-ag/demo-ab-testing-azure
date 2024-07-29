@@ -1,10 +1,3 @@
-<style>
-    img[alt=logo] { width: 20px; top: 3px; position: relative; margin-right: 5px;}
-    .intro{
-      
-    }
-</style>
-
 # A/B Testing Playground
 ## Introduction
 <div style="display: flex;">
@@ -31,8 +24,8 @@
   - Google Analytics
   - Microsoft Clarify
 - A/B Testng solution
-  - API: using ![logo](../docs/images/nuget.svg)[IPSAG.AbTesting][nuget_package]
-  - UI: using ![logo](../docs/images/npm.png)[@ips-ag/abtesting][npm_package]
+  - API: using <img style="width: 20px; top: 3px; position: relative; margin-right: 5px;" src="../docs/images/nuget.svg"/> [IPSAG.AbTesting][nuget_package]
+  - UI: using <img style="width: 20px; top: 3px; position: relative; margin-right: 5px;" src="../docs/images/npm.png"/> [@ips-ag/abtesting][npm_package]
 
 ## Getting Started
 
