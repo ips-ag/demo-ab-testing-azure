@@ -1,3 +1,10 @@
+<style>
+    img[alt=logo] { width: 20px; top: 3px; position: relative; margin-right: 5px;}
+    .intro{
+      
+    }
+</style>
+
 # A/B Testing Playground
 ## Introduction
 <div style="display: flex;">
@@ -128,10 +135,3 @@ We value your feedback! If you have any suggestions, bug reports, or feature req
 [docker_linux]: https://docs.docker.com/desktop/install/linux-install/
 [bicep_tools]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install
 [create_acr]: https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli#create-a-new-acr
-
-<style>
-    img[alt=logo] { width: 20px; top: 3px; position: relative; margin-right: 5px;}
-    .intro{
-      
-    }
-</style>
