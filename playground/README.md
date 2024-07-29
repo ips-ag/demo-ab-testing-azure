@@ -26,7 +26,7 @@
 - Analytics Platforms
   - Google Analytics
   - Microsoft Clarify
-- A/B Testng solution
+- A/B Testing solution
   - API: using <img style="width: 20px; top: 3px; position: relative; margin-right: 5px;" src="../docs/images/nuget.svg"/> [IPSAG.AbTesting][nuget_package]
   - UI: using <img style="width: 20px; top: 3px; position: relative; margin-right: 5px;" src="../docs/images/npm.png"/> [@ips-ag/abtesting][npm_package]
 
@@ -95,15 +95,6 @@ npm start
 ```
 
 This will start the client application on `http://localhost:4200`.
-
-## Prerequisites
-
-Before you can run the A/B Testing Playground, ensure you have the following prerequisites installed on your system:
-
-- **.NET 7.0 SDK**: Required to run the API. You can download it from [https://dotnet.microsoft.com/download](https://dotnet.microsoft.com/download).
-- **Node.js and npm**: Required to run the client application. Download them from [https://nodejs.org](https://nodejs.org).
-
-With these prerequisites in place, you're ready to start using the A/B Testing Playground to conduct your A/B testing experiments.
 
 ## Credits
 
