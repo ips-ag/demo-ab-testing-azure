@@ -121,7 +121,7 @@ We value your feedback! If you have any suggestions, bug reports, or feature req
 [app_insights_docs]: https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview
 [license]: https://github.com/ips-ag/demo-ab-testing-azure/blob/main/LICENSE
 [google_analytics]: https://support.google.com/analytics/answer/9304153?hl=en&ref_topic=14088998&sjid=6531891111814199507-EU
-[google_tag_id]: (https://support.google.com/analytics/answer/9539598?hl=en)
+[google_tag_id]: https://support.google.com/analytics/answer/9539598?hl=en
 [ms_clarify]: https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-setup
 [clarify_id]: https://learn.microsoft.com/en-us/clarity/third-party-integrations/abtasty-integration#step-1
 [docker_window]: https://docs.docker.com/desktop/install/windows-install/
