@@ -21,41 +21,29 @@ namespace Infrastructure.Identity
         {
             if (!userManager.Users.Any())
             {
-                var users = new List<ApplicationUser>
-            {
-                new() {
-                    UserName = "uyen.dinhluu@ips-ag.com",
-                    Email = "uyen.dinhluu@ips-ag.com",
-                    DisplayName = "Uyen Luu - EarlyAccess",
-                    SoftwareDistributionGroup = "EarlyAccess",
+                var userByGroup = new Dictionary<string, string[]>
+                {
+                    {"EarlyAccess" , ["uyen.dinhluu@ips-ag.com", "uyen1.dinhluu@ips-ag.com", "uyen2.dinhluu@ips-ag.com"]},
+                    {"Stable" , ["anh.quangtran@ips-ag.com", "anh1.quangtran@ips-ag.com"]}
+                };
+
+                var users = userByGroup.SelectMany(g => g.Value.Select((emailAddress, index) => new ApplicationUser
+                {
+                    UserName = emailAddress,
+                    Email = emailAddress,
+                    DisplayName = $"{g.Key} {index + 1}",
+                    SoftwareDistributionGroup = g.Key,
                     Address = new Address
                     {
                         Id = Guid.NewGuid().ToString(),
-                        Fname = "Uyen",
-                        Lname = "Luu",
+                        Fname = "Fname",
+                        Lname = "Lname",
                         Street = "11 Le Dinh Ly",
                         City = "Danang",
-                        State = "Jharkhand",
-                        ZipCode = "123456"
+                        State = "Thanh Khe",
+                        ZipCode = "50000"
                     }
-                },
-                new() {
-                    UserName = "anh.quangtran@ips-ag.com",
-                    Email = "anh.quangtran@ips-ag.com",
-                    DisplayName = "Steve - Stable",
-                    SoftwareDistributionGroup = "Stable",
-                    Address = new Address
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Fname = "Steve",
-                        Lname = "Steve",
-                        Street = "11 Le Dinh Ly",
-                        City = "Danang",
-                        State = "Jharkhand",
-                        ZipCode = "123456"
-                    }
-                }
-            };
+                }));
 
                 foreach (var user in users)
                 {

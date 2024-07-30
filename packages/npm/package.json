@@ -13,7 +13,7 @@
     "@angular/forms": "^17.3.0"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.8",
     "@angular-eslint/builder": "17.5.2",
