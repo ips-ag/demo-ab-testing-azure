@@ -8,9 +8,9 @@
     "lint": "ng lint"
   },
   "dependencies": {
-    "@angular/common": "^17.3.0",
-    "@angular/core": "^17.3.0",
-    "@angular/forms": "^17.3.0"
+    "@angular/common": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@angular/forms": "^21.2.0"
   },
   "author": "",
   "license": "MIT",
@@ -19,9 +19,9 @@
     "@angular-eslint/builder": "17.5.2",
     "@angular-eslint/eslint-plugin": "17.5.2",
     "@angular-eslint/eslint-plugin-template": "17.5.2",
-    "@angular-eslint/schematics": "17.5.2",
+    "@angular-eslint/schematics": "21.2.0",
     "@angular-eslint/template-parser": "17.5.2",
-    "@angular/cli": "^17.3.8",
+    "@angular/cli": "^21.2.0",
     "@typescript-eslint/eslint-plugin": "7.11.0",
     "@typescript-eslint/parser": "7.11.0",
     "eslint": "^8.57.0",
